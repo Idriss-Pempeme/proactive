@@ -150,20 +150,6 @@ export default function HeroSlider() {
                 </h1>
 
                 <p className="text-lead hero-desc">{slide.desc}</p>
-
-                <div className="hero-buttons">
-                  <Link href="#formations" className="btn btn-emerald hero-btn">
-                    Nos Formations
-                  </Link>
-                  <Link href="/about" className="hero-link">
-                    À propos de nous
-                    <span className="hero-link-arrow">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M5 12H19M19 12L13 6M19 12L13 18" />
-                      </svg>
-                    </span>
-                  </Link>
-                </div>
               </div>
             ))}
           </div>
@@ -228,6 +214,25 @@ export default function HeroSlider() {
                 </Link>
               </div>
             </div>
+          </div>
+
+          {/* Identical across every slide, so it's a single static block rather
+              than duplicated per-slide markup. On mobile (single column) this
+              also means it renders after the video card above, matching the
+              stacked reading order; on desktop, grid auto-placement drops it
+              into the next open cell under the text column. */}
+          <div className="hero-buttons">
+            <Link href="#formations" className="btn btn-emerald hero-btn">
+              Nos Formations
+            </Link>
+            <Link href="/about" className="hero-link">
+              À propos de nous
+              <span className="hero-link-arrow">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M5 12H19M19 12L13 6M19 12L13 18" />
+                </svg>
+              </span>
+            </Link>
           </div>
         </div>
       </div>
