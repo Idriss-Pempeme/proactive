@@ -2,11 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useScrollAnimations, useCounterAnimation, useParallax } from './hooks';
+import { useScrollAnimations, useCounterAnimation, useParallax } from '@/app/hooks';
 
-import HeroSlider from './components/HeroSlider';
+import HeroSlider from '@/app/components/HeroSlider';
 
-function Stars({ className }) {
+function Stars({ className }: { className?: string }) {
   return (
     <span className={className} aria-label="5 étoiles sur 5" role="img">
       ★★★★★
@@ -52,7 +52,7 @@ export default function HomePage() {
         <div className="container">
           <div className="fade-up" style={{ textAlign: 'left', marginBottom: '40px' }}>
             <h2 style={{ fontSize: 'clamp(1.875rem, 4.5vw, 3rem)', marginBottom: '15px' }}>
-              Nos Formations <span style={{ color: 'var(--gold-main)' }}>D'Excellence.</span>
+              Nos Formations <span style={{ color: 'var(--gold-main)' }}>D&apos;Excellence.</span>
             </h2>
             <p className="text-lead" style={{ maxWidth: '700px', margin: '0' }}>
               Accédez à notre catalogue de formations certifiantes et propulsez votre carrière dans le commerce international.
@@ -167,7 +167,7 @@ export default function HomePage() {
           <div className="fade-up">
             <div className="badge-premium">
               <span className="badge-dot"></span>
-              <span className="badge-text">L'Écosystème Proactive</span>
+              <span className="badge-text">L&apos;Écosystème Proactive</span>
             </div>
             <h2>Nos piliers stratégiques</h2>
           </div>
@@ -177,7 +177,7 @@ export default function HomePage() {
               <div className="value-icon" style={{ marginBottom: '20px' }}>
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold-main)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
               </div>
-              <h3>Sourcing d'Élite</h3>
+              <h3>Sourcing d&apos;Élite</h3>
               <p>Identification et qualification des meilleures matières premières africaines selon des standards internationaux rigoureux.</p>
             </div>
             <div className="value-card">
@@ -192,7 +192,7 @@ export default function HomePage() {
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold-main)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
               </div>
               <h3>Transmission</h3>
-              <p>Formation d'une nouvelle génération de négociants africains via notre Académie d'excellence.</p>
+              <p>Formation d&apos;une nouvelle génération de négociants africains via notre Académie d&apos;excellence.</p>
             </div>
           </div>
         </div>
@@ -210,7 +210,7 @@ export default function HomePage() {
             </div>
             <div>
               <div className="stat-number counter-value" data-target="25" data-suffix="">0</div>
-              <div className="stat-label">Pays d'Opération</div>
+              <div className="stat-label">Pays d&apos;Opération</div>
             </div>
             <div>
               <div className="stat-number counter-value" data-target="500" data-suffix="+">0</div>
@@ -230,7 +230,7 @@ export default function HomePage() {
           <div className="cta-premium glass-card fade-up">
             <h2 style={{ marginBottom: '20px' }}>Prêt à transformer les opportunités ?</h2>
             <p className="text-lead" style={{ maxWidth: '600px', margin: '0 auto 40px' }}>
-              Rejoignez l'écosystème Proactive Services pour structurer vos opérations de négoce ou vous former à l'excellence internationale.
+              Rejoignez l&apos;écosystème Proactive Services pour structurer vos opérations de négoce ou vous former à l&apos;excellence internationale.
             </p>
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
               <Link href="/about" className="btn btn-primary">

@@ -68,11 +68,11 @@ export default function NotFound() {
           margin: '0 auto 40px',
           lineHeight: '1.6'
         }}>
-          Il semblerait que vous ayez navigué hors des routes du négoce international. La page que vous cherchez n'existe pas ou a été déplacée.
+          Il semblerait que vous ayez navigué hors des routes du négoce international. La page que vous cherchez n&apos;existe pas ou a été déplacée.
         </p>
 
         <Link href="/" className="btn btn-emerald">
-          Retour à l'Accueil
+          Retour à l&apos;Accueil
         </Link>
       </div>
 

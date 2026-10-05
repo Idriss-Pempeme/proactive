@@ -1,6 +1,10 @@
 import Link from 'next/link';
+import { cacheLife } from 'next/cache';
 
-export default function Footer() {
+export default async function Footer() {
+  'use cache';
+  cacheLife('days');
+  const year = new Date().getFullYear();
   return (
     <footer className="footer-premium" style={{ backgroundColor: 'var(--bg-darker)' }}>
       <div className="container">
@@ -11,7 +15,7 @@ export default function Footer() {
               <span className="brand-subtitle">Services</span>
             </Link>
             <p className="text-muted" style={{ maxWidth: '400px', lineHeight: '1.8' }}>
-              Le standard d'excellence du négoce international africain. Structuration, sécurisation et distribution de valeur à l'échelle mondiale.
+              Le standard d&apos;excellence du négoce international africain. Structuration, sécurisation et distribution de valeur à l&apos;échelle mondiale.
             </p>
           </div>
 
@@ -30,13 +34,13 @@ export default function Footer() {
             <div className="footer-links">
               <a href="mailto:direction@proactiveservices.com">direction@proactiveservices.com</a>
               <a href="#">+225 00 00 00 00</a>
-              <a href="#">Abidjan, Côte d'Ivoire</a>
+              <a href="#">Abidjan, Côte d&apos;Ivoire</a>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <div>&copy; {new Date().getFullYear()} Proactive Services. Tous droits réservés.</div>
+          <div>&copy; {year} Proactive Services. Tous droits réservés.</div>
           <div style={{ display: 'flex', gap: '20px' }}>
             <a href="#">Mentions Légales</a>
             <a href="#">Politique de Confidentialité</a>

@@ -47,7 +47,7 @@ function CloseIcon() {
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -55,6 +55,8 @@ export default function Navbar() {
   // The inline script in the root layout already resolved the theme before
   // paint, so the DOM attribute is the source of truth, not localStorage.
   useEffect(() => {
+    // Intentional: hydration-safe sync from the DOM attribute set by the inline script.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const applied = document.documentElement.getAttribute('data-theme');
     if (applied === 'light' || applied === 'dark') setTheme(applied);
@@ -66,7 +68,7 @@ export default function Navbar() {
       document.documentElement.setAttribute('data-theme', next);
       try {
         window.localStorage.setItem('theme', next);
-      } catch (e) {}
+      } catch {}
       return next;
     });
   }, []);
@@ -80,20 +82,23 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
+  // Close the mobile menu on navigation (adjust state during render, not in an effect).
+  const [menuPathname, setMenuPathname] = useState(pathname);
+  if (menuPathname !== pathname) {
+    setMenuPathname(pathname);
     setMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!menuOpen) return;
 
     document.body.classList.add('nav-open');
 
-    function handleKey(e) {
+    function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') setMenuOpen(false);
     }
     const wide = window.matchMedia('(min-width: 1025px)');
-    function handleWide(e) {
+    function handleWide(e: MediaQueryListEvent) {
       if (e.matches) setMenuOpen(false);
     }
 
@@ -107,7 +112,7 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  const isActive = (href) => !href.includes('#') && pathname === href;
+  const isActive = (href: string) => !href.includes('#') && pathname === href;
 
   return (
     <>

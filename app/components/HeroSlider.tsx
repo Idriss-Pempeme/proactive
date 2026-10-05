@@ -69,7 +69,7 @@ export default function HeroSlider() {
     return () => clearInterval(timer);
   }, [isPaused, videoStarted]);
 
-  function offsetFor(index) {
+  function offsetFor(index: number) {
     if (index === current) return 'translateX(0)';
     const previous = (current - 1 + slides.length) % slides.length;
     return index === previous ? 'translateX(15vw)' : 'translateX(-15vw)';

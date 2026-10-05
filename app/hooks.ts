@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 /**
  * Custom hook for scroll-triggered animations via IntersectionObserver.
@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
  */
 export function useScrollAnimations() {
   useEffect(() => {
-    const animatedElements = document.querySelectorAll(
+    const animatedElements = document.querySelectorAll<HTMLElement>(
       '.fade-up, .fade-left, .fade-right, .scale-in, .stagger-children'
     );
 
@@ -40,17 +40,17 @@ export function useScrollAnimations() {
  */
 export function useCounterAnimation() {
   useEffect(() => {
-    const counterElements = document.querySelectorAll('.counter-value[data-target]');
+    const counterElements = document.querySelectorAll<HTMLElement>('.counter-value[data-target]');
 
     if (!counterElements.length || !('IntersectionObserver' in window)) return;
 
-    function animateCounter(el) {
-      const target = parseInt(el.getAttribute('data-target'), 10);
+    function animateCounter(el: HTMLElement) {
+      const target = parseInt(el.getAttribute('data-target') ?? '0', 10);
       const suffix = el.getAttribute('data-suffix') || '+';
       const duration = 2000;
       const startTime = performance.now();
 
-      function updateCount(currentTime) {
+      function updateCount(currentTime: number) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
@@ -66,7 +66,7 @@ export function useCounterAnimation() {
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            animateCounter(entry.target);
+            animateCounter(entry.target as HTMLElement);
             observer.unobserve(entry.target);
           }
         });
@@ -85,8 +85,9 @@ export function useCounterAnimation() {
  */
 export function useParallax(selector = '.hero-bg img') {
   useEffect(() => {
-    const el = document.querySelector(selector);
-    if (!el) return;
+    const found = document.querySelector<HTMLElement>(selector);
+    if (!found) return;
+    const el: HTMLElement = found;
 
     function handleScroll() {
       const scrolled = window.scrollY;
@@ -107,12 +108,16 @@ export function useCardTilt(selectors = '.feature-card, .program-card, .testimon
   useEffect(() => {
     if (!window.matchMedia('(min-width: 1024px)').matches) return;
 
-    const cards = document.querySelectorAll(selectors);
+    const cards = document.querySelectorAll<HTMLElement>(selectors);
 
-    const handlers = [];
+    const handlers: {
+      card: HTMLElement;
+      handleMove: (e: MouseEvent) => void;
+      handleLeave: () => void;
+    }[] = [];
 
     cards.forEach(card => {
-      const handleMove = (e) => {
+      const handleMove = (e: MouseEvent) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;

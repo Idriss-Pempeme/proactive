@@ -1,6 +1,6 @@
 "use client";
 
-import { useScrollAnimations } from '../hooks';
+import { useScrollAnimations } from '@/app/hooks';
 
 const BOOKS = [
   {
@@ -43,7 +43,7 @@ export default function LivresPage() {
               Nos <span style={{ color: 'var(--gold-main)' }}>Ouvrages.</span>
             </h1>
             <p className="text-lead" style={{ maxWidth: '600px', margin: '0 auto' }}>
-              Découvrez les méthodes et stratégies exclusives de Josette Kameni compilées dans nos best-sellers pour maîtriser l'export.
+              Découvrez les méthodes et stratégies exclusives de Josette Kameni compilées dans nos best-sellers pour maîtriser l&apos;export.
             </p>
           </div>
 

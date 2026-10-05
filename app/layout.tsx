@@ -1,10 +1,12 @@
+import type { Metadata, Viewport } from 'next';
+import type { ReactNode } from 'react';
 import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import PageLoader from './components/PageLoader';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Proactive Services | Négoce · Formation · Opportunités',
   description:
     'Proactive Services - Créer des ponts entre l\'Afrique et les marchés internationaux. Formation professionnelle en négoce et commerce international des matières premières.',
@@ -12,7 +14,7 @@ export const metadata = {
     'négoce, formation, Afrique, commerce international, matières premières, Proactive Services, LMS',
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -22,7 +24,7 @@ export const viewport = {
   ],
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>

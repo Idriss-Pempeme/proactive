@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useScrollAnimations } from '../hooks';
+import { useScrollAnimations } from '@/app/hooks';
 
 export default function AboutPage() {
   useScrollAnimations();
@@ -398,21 +398,21 @@ export default function AboutPage() {
               </div>
 
               <h1 style={{ fontSize: 'clamp(2.25rem, 4vw, 4rem)', marginBottom: '20px', lineHeight: 1.05 }}>
-                L'Ambassadrice<br/>du <span className="text-gradient-gold">Négoce.</span>
+                L&apos;Ambassadrice<br/>du <span className="text-gradient-gold">Négoce.</span>
               </h1>
 
               <div className="founder-quote">
                 <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: 'var(--text-muted)', fontStyle: 'italic', margin: 0 }}>
-                  Figure africaine emblématique dans le négoce international, couronnée de multiples contrats mondiaux, on l'appelle <strong style={{ color: 'var(--gold-main)' }}>« La Reine du Négoce »</strong>.
+                  Figure africaine emblématique dans le négoce international, couronnée de multiples contrats mondiaux, on l&apos;appelle <strong style={{ color: 'var(--gold-main)' }}>« La Reine du Négoce »</strong>.
                 </p>
               </div>
 
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '15px', fontSize: '1rem' }}>
-                Forte de <strong>40 ans d'expérience</strong> dans l'entrepreneuriat (santé, éducation, restauration), Josette Kameni arpente le monde pour maîtriser les rouages du commerce international - de l'Afrique, pourvoyeur infini de matières premières, aux marchés d'Asie et d'Occident.
+                Forte de <strong>40 ans d&apos;expérience</strong> dans l&apos;entrepreneuriat (santé, éducation, restauration), Josette Kameni arpente le monde pour maîtriser les rouages du commerce international - de l&apos;Afrique, pourvoyeur infini de matières premières, aux marchés d&apos;Asie et d&apos;Occident.
               </p>
 
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '25px', fontSize: '1rem' }}>
-                Joviale et débordante d'énergie positive, ce ne sont pas les obstacles qui la définissent, mais son courage inébranlable à élever l'Afrique sur l'échiquier mondial.
+                Joviale et débordante d&apos;énergie positive, ce ne sont pas les obstacles qui la définissent, mais son courage inébranlable à élever l&apos;Afrique sur l&apos;échiquier mondial.
               </p>
 
               <div className="founder-stats">
@@ -456,7 +456,7 @@ export default function AboutPage() {
             </div>
             <h2 style={{ fontSize: 'clamp(1.875rem, 4.5vw, 3rem)', marginBottom: '20px' }}>Notre Vision & Notre Rôle</h2>
             <p className="text-lead" style={{ maxWidth: '800px', margin: '0 auto' }}>
-              L'Afrique ne doit pas seulement exporter ses matières premières - elle doit les valoriser, les transformer et les connecter intelligemment aux marchés internationaux.
+              L&apos;Afrique ne doit pas seulement exporter ses matières premières - elle doit les valoriser, les transformer et les connecter intelligemment aux marchés internationaux.
             </p>
           </div>
 
@@ -475,7 +475,7 @@ export default function AboutPage() {
                 </div>
               </div>
               <p className="role-card-body">
-                Nous identifions les opportunités rares, qualifions les fournisseurs avec rigueur, mettons en relation l'offre et la demande, et sécurisons de bout-en-bout chaque opération commerciale internationale.
+                Nous identifions les opportunités rares, qualifions les fournisseurs avec rigueur, mettons en relation l&apos;offre et la demande, et sécurisons de bout-en-bout chaque opération commerciale internationale.
               </p>
               <div className="role-tags">
                 {['Sourcing', 'Qualification', 'Négociation', 'Sécurisation'].map((tag, i) => (
@@ -494,11 +494,11 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--emerald-main)', display: 'block', marginBottom: '4px' }}>Pilier 02</span>
-                  <h3 style={{ fontSize: 'clamp(1.35rem, 2.2vw, 1.6rem)', margin: 0 }}>L'Académie Proactive</h3>
+                  <h3 style={{ fontSize: 'clamp(1.35rem, 2.2vw, 1.6rem)', margin: 0 }}>L&apos;Académie Proactive</h3>
                 </div>
               </div>
               <p className="role-card-body">
-                Nous transmettons notre savoir-faire d'excellence à celles et ceux qui souhaitent se lancer et prospérer dans le commerce international grâce à une méthodologie éprouvée.
+                Nous transmettons notre savoir-faire d&apos;excellence à celles et ceux qui souhaitent se lancer et prospérer dans le commerce international grâce à une méthodologie éprouvée.
               </p>
               <div className="role-tags" style={{ gap: '8px' }}>
                 {['Sourcer', 'Qualifier', 'Acheteurs', 'Offre', 'Négocier', 'Sécuriser', 'Logistique', 'Commercialiser'].map((tag, i) => (
@@ -538,7 +538,7 @@ export default function AboutPage() {
             </div>
             <h2 style={{ fontSize: 'clamp(1.875rem, 4.5vw, 3rem)', marginBottom: '20px' }}>Un Réseau Actif.<br/><span className="text-gradient-green">Des Résultats Concrets.</span></h2>
             <p className="text-lead" style={{ maxWidth: '700px' }}>
-              Proactive Services n'est pas qu'une entreprise. C'est un écosystème d'experts, d'apprenants et de partenaires qui collaborent sur le terrain.
+              Proactive Services n&apos;est pas qu&apos;une entreprise. C&apos;est un écosystème d&apos;experts, d&apos;apprenants et de partenaires qui collaborent sur le terrain.
             </p>
           </div>
 
@@ -571,7 +571,7 @@ export default function AboutPage() {
 
           {/* Event Photos */}
           <div className="fade-up" style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <h3 style={{ fontSize: 'clamp(1.5rem, 3vw, 1.8rem)' }}>Galerie d'Événements</h3>
+            <h3 style={{ fontSize: 'clamp(1.5rem, 3vw, 1.8rem)' }}>Galerie d&apos;Événements</h3>
           </div>
           <div className="photo-grid">
             {[
@@ -627,7 +627,7 @@ export default function AboutPage() {
                 Josette Kameni lève un voile sur le Négoce International des Matières Premières
               </h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, fontSize: '1.1rem', marginBottom: '30px' }}>
-                Découvrez le parcours exceptionnel de la « Reine du Négoce ». Dans cette interview exclusive, Josette Kameni partage sa vision de l'entrepreneuriat africain et dévoile les clés pour s'imposer sur le marché international des matières premières.
+                Découvrez le parcours exceptionnel de la « Reine du Négoce ». Dans cette interview exclusive, Josette Kameni partage sa vision de l&apos;entrepreneuriat africain et dévoile les clés pour s&apos;imposer sur le marché international des matières premières.
               </p>
 
               <a
@@ -637,7 +637,7 @@ export default function AboutPage() {
                 className="btn btn-primary"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '16px 35px' }}
               >
-                Lire l'article complet
+                Lire l&apos;article complet
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
                 </svg>
@@ -657,7 +657,7 @@ export default function AboutPage() {
             </p>
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link href="/formation" className="btn btn-primary" style={{ padding: '16px 40px', fontSize: '1.05rem' }}>
-                Rejoindre l'Académie
+                Rejoindre l&apos;Académie
               </Link>
               <Link href="/contact" className="btn btn-secondary" style={{ padding: '16px 40px', fontSize: '1.05rem' }}>
                 Devenir Partenaire
