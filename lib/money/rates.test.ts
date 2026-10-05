@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CFA_PER_EUR } from './currencies';
-import { fetchRates, parseRates } from './rates';
+import { fetchLiveRates, parseRates } from './rates';
 
 const good = {
   result: 'success',
@@ -24,19 +24,38 @@ describe('parseRates', () => {
   });
 });
 
-describe('fetchRates', () => {
-  it('degrades to fixed rates when the network fails', async () => {
+describe('fetchLiveRates', () => {
+  it('rejects on network failure', async () => {
     const failing = vi.fn().mockRejectedValue(new Error('offline')) as unknown as typeof fetch;
-    expect(await fetchRates(failing)).toEqual({ EUR: 1, XOF: CFA_PER_EUR, XAF: CFA_PER_EUR });
+    await expect(fetchLiveRates(failing)).rejects.toThrow();
   });
 
-  it('degrades on non-200', async () => {
+  it('rejects on non-200', async () => {
     const notOk = vi.fn().mockResolvedValue(new Response('nope', { status: 503 })) as unknown as typeof fetch;
-    expect(await fetchRates(notOk)).toEqual({ EUR: 1, XOF: CFA_PER_EUR, XAF: CFA_PER_EUR });
+    await expect(fetchLiveRates(notOk)).rejects.toThrow();
   });
 
-  it('parses a good response', async () => {
+  it('rejects on malformed payload', async () => {
+    const badPayload = vi.fn().mockResolvedValue(Response.json({ result: 'error' })) as unknown as typeof fetch;
+    await expect(fetchLiveRates(badPayload)).rejects.toThrow();
+  });
+
+  it('resolves a good response', async () => {
     const ok = vi.fn().mockResolvedValue(Response.json(good)) as unknown as typeof fetch;
-    expect((await fetchRates(ok)).USD).toBe(1.08);
+    expect((await fetchLiveRates(ok)).USD).toBe(1.08);
+  });
+
+  it('passes an AbortSignal with 5s timeout', async () => {
+    const ok = vi.fn().mockResolvedValue(Response.json(good)) as unknown as typeof fetch;
+    await fetchLiveRates(ok);
+    expect(ok).toHaveBeenCalledWith('https://open.er-api.com/v6/latest/EUR', expect.objectContaining({
+      signal: expect.any(AbortSignal),
+    }));
+  });
+
+  it('calls the exact URL', async () => {
+    const ok = vi.fn().mockResolvedValue(Response.json(good)) as unknown as typeof fetch;
+    await fetchLiveRates(ok);
+    expect(ok).toHaveBeenCalledWith('https://open.er-api.com/v6/latest/EUR', expect.any(Object));
   });
 });
