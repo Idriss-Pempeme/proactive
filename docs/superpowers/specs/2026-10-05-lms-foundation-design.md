@@ -184,7 +184,7 @@ certificates, instructor applications.
   curriculum accordion (sections → lessons with duration and "Aperçu" badge),
   instructor card, rating summary placeholder (reviews in Phase 4).
 - `generateMetadata` with title/description/OG image; 404 for unpublished
-  (except owner/admin preview).
+  courses (owner/admin preview arrives with the Phase 2 builder).
 
 ### Instructor profile `/instructors/[id]`
 - Avatar, headline, bio, stats (courses, students, avg rating), their
@@ -200,13 +200,17 @@ certificates, instructor applications.
 - Charge currency is always EUR. Display rule: `49 €` and, when the visitor's
   currency ≠ EUR, a muted `≈ 53 $US` after it, plus a footnote tooltip
   "Montant indicatif. Paiement en euros."
-- Visitor currency resolved: cookie `display_currency` (set via a selector in
-  the footer) → `x-vercel-ip-country` header → country→currency map → EUR
-  fallback. Supported display currencies: EUR, USD, GBP, CHF, CAD, XOF, XAF,
-  MAD, NGN, GHS, KES, ZAR (others fall back to USD).
-- Rates: ECB daily reference XML (free, EUR-based), fetched with `"use cache"`
-  `cacheLife` ~12 h; XOF/XAF use the fixed peg (655.957 per EUR) independently
-  of the feed. On fetch failure: show EUR only (never block rendering).
+- Visitor currency resolved in `proxy.ts`: if no `display_currency` cookie,
+  map `x-vercel-ip-country` → currency and set the cookie (1 year). A selector
+  in the footer overwrites it. Pages stay static/cacheable: the `Price` client
+  component renders EUR on the server and adds the approximation after
+  hydration from the cookie + `/api/rates`. Supported display currencies:
+  EUR, USD, GBP, CHF, CAD, XOF, XAF, MAD, NGN, GHS, KES, ZAR (other countries
+  → USD; no country header, e.g. local dev → EUR).
+- Rates: `https://open.er-api.com/v6/latest/EUR` (free, no key, EUR base,
+  covers African currencies — the ECB feed lacks MAD/NGN/GHS/KES), served by a
+  `GET /api/rates` route cached ~12 h. XOF/XAF always use the fixed peg
+  (655.957 per EUR). On fetch failure: show EUR only (never block rendering).
 - Rounding: whole units for all display currencies (approximate by design).
 
 ### Signed-in shells
