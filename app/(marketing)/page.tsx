@@ -1,10 +1,9 @@
-'use client';
-
-import Image from 'next/image';
 import Link from 'next/link';
-import { useScrollAnimations, useCounterAnimation, useParallax } from '@/app/hooks';
 
 import HeroSlider from '@/app/components/HeroSlider';
+import { CourseGrid } from '@/components/catalog/CourseGrid';
+import { cachedPlatformStats, cachedPopularCourses } from '@/lib/catalog/cached';
+import { HomeEffects } from './HomeEffects';
 
 function Stars({ className }: { className?: string }) {
   return (
@@ -37,92 +36,46 @@ const TESTIMONIALS = [
   },
 ];
 
-export default function HomePage() {
-  useScrollAnimations();
-  useCounterAnimation();
-  // Parallax is now handled internally by HeroSlider for the hero, keeping it for others if needed
-  useParallax('.image-frame img');
+export default async function HomePage() {
+  const [popular, stats] = await Promise.all([cachedPopularCourses(8), cachedPlatformStats()]);
 
   return (
     <>
+      <HomeEffects />
       <HeroSlider />
 
       {/* ========== COURSE CATALOGUE ========== */}
-      <section className="section course-section">
+      <section id="formations" className="section course-section">
         <div className="container">
-          <div className="fade-up" style={{ textAlign: 'left', marginBottom: '40px' }}>
+          <div className="fade-up" style={{ marginBottom: '40px' }}>
             <h2 style={{ fontSize: 'clamp(1.875rem, 4.5vw, 3rem)', marginBottom: '15px' }}>
-              Nos Formations <span style={{ color: 'var(--gold-main)' }}>D&apos;Excellence.</span>
+              Formations <span style={{ color: 'var(--gold-main)' }}>populaires.</span>
             </h2>
-            <p className="text-lead" style={{ maxWidth: '700px', margin: '0' }}>
-              Accédez à notre catalogue de formations certifiantes et propulsez votre carrière dans le commerce international.
+            <p className="text-lead" style={{ maxWidth: '700px', margin: 0 }}>
+              {stats.courses} formations par {stats.instructors} formateur{stats.instructors > 1 ? 's' : ''} pour propulser votre carrière dans le commerce international.
             </p>
           </div>
-
-          <div className="course-grid">
-            {[
-              { img: '/photo_2026-09-29_14-16-58.jpg', cat: 'NÉGOCE', title: 'Les Fondements du Négoce International', price: '990 €' },
-              { img: '/photo_2026-09-29_14-16-59.jpg', cat: 'LOGISTIQUE', title: 'Maîtriser la Supply Chain Africaine', price: '750 €' },
-              { img: '/photo_2026-09-29_14-17-00.jpg', cat: 'QUALITÉ', title: 'Normes et Certifications à l\'Export', price: '500 €' },
-              { img: '/photo_2026-09-29_14-17-01.jpg', cat: 'FINANCE', title: 'Sécurisation des Paiements (Credoc)', price: '1,200 €' },
-              { img: '/negoce 1.jpeg', cat: 'STRATÉGIE', title: 'Pénétrer le Marché Européen', price: '1,500 €' },
-              { img: '/negoce 2.jpeg', cat: 'SOURCING', title: 'Identifier les Fournisseurs Fiables', price: '850 €' },
-              { img: '/negoce3.jpeg', cat: 'DOUANE', title: 'Optimisation Douanière et Incoterms', price: '600 €' },
-              { img: '/negoce4.jpeg', cat: 'JURIDIQUE', title: 'Rédaction de Contrats de Vente', price: '900 €' }
-            ].map((course, i) => (
-              <div key={i} className="course-card fade-up">
-                {/* Thumbnail */}
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden', borderBottom: '1px solid var(--border-subtle)' }}>
-                  <Image src={course.img} alt={course.title} fill sizes="(max-width: 560px) 100vw, (max-width: 860px) 50vw, (max-width: 1200px) 33vw, 25vw" style={{ objectFit: 'cover' }} className="course-img" />
-                  <div className="course-overlay" style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0)', transition: 'background-color 0.2s' }}></div>
-                  
-                  {/* Diagonal Bestseller Ribbon */}
-                  {(i === 0 || i === 1 || i === 4) && (
-                    <div style={{ position: 'absolute', top: '15px', left: '-35px', width: '150px', backgroundColor: '#eceb98', color: '#3d3c0a', textAlign: 'center', padding: '4px 0', fontSize: '0.7rem', fontWeight: '800', fontFamily: "'Outfit', sans-serif", transform: 'rotate(-45deg)', zIndex: 10, boxShadow: '0 2px 4px rgba(0,0,0,0.3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Best Seller
-                    </div>
-                  )}
-                </div>
-                
-                <div style={{ padding: '15px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                  {/* Title */}
-                  <h3 style={{ fontSize: '1.05rem', fontFamily: "'Outfit', sans-serif", fontWeight: '700', color: 'var(--text-main)', margin: '0 0 4px 0', lineHeight: '1.3', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {course.title}
-                  </h3>
-                  
-                  {/* Author */}
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '0 0 4px 0', fontFamily: "'Outfit', sans-serif" }}>
-                    Josette Kameni
-                  </p>
-                  
-                  {/* Rating */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px', fontFamily: "'Outfit', sans-serif" }}>
-                    <span style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--rating-star)' }}>4.9</span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--rating-star)', letterSpacing: '-1px' }} aria-hidden="true">★★★★★</span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '2px' }}>(320)</span>
-                  </div>
-                  
-                  {/* Price & Buy Button Row */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '10px' }}>
-                    <span style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-main)', fontFamily: "'Outfit', sans-serif" }}>{course.price}</span>
-                    <button className="udemy-buy-btn" style={{ minHeight: '44px', padding: '8px 32px', backgroundColor: 'var(--cta-emerald-bg)', color: 'var(--cta-emerald-fg)', border: 'none', borderRadius: '4px', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", transition: 'filter 0.2s ease' }}>
-                      Obtenir
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+          {popular.length > 0 ? (
+            <CourseGrid courses={popular} />
+          ) : (
+            <p className="text-muted">Les premières formations arrivent très bientôt.</p>
+          )}
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 40 }}>
+            <Link href="/courses" className="btn btn-primary">Voir tout le catalogue</Link>
           </div>
         </div>
+      </section>
 
-        <style jsx>{`
-          .course-card:hover .course-overlay {
-            background-color: rgba(0,0,0,0.2);
-          }
-          .udemy-buy-btn:hover {
-            filter: brightness(1.15);
-          }
-        `}</style>
+      <section className="section">
+        <div className="container">
+          <div className="cta-premium glass-card fade-up">
+            <h2 style={{ marginBottom: '16px' }}>Vous êtes expert du négoce ou de l’export ?</h2>
+            <p className="text-lead" style={{ maxWidth: '640px', margin: '0 auto 32px' }}>
+              Publiez votre formation sur Proactive Académie et transmettez votre savoir-faire à une nouvelle génération de négociants.
+            </p>
+            <Link href="/teach" className="btn btn-secondary">Devenir formateur</Link>
+          </div>
+        </div>
       </section>
 
       {/* ========== TESTIMONIALS ========== */}
