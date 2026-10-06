@@ -1,3 +1,5 @@
+// Migrations only: never run `drizzle-kit push` — it does not know about the hand-written RLS/triggers in
+// drizzle/0001_rls_and_triggers.sql and would drop them. Never remove `authUsers` from lib/db/schema.ts.
 import { defineConfig } from 'drizzle-kit';
 
 try {

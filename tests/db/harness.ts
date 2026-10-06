@@ -17,18 +17,28 @@ const SUPABASE_STUBS = `
   do $$ begin create role authenticated nologin; exception when duplicate_object then null; end $$;
 `;
 
-const SUPABASE_GRANTS = `
-  grant usage on schema public, auth to anon, authenticated;
-  grant select, insert, update, delete on all tables in schema public to anon, authenticated;
-  grant execute on all functions in schema public, auth to anon, authenticated;
+// Mirrors Supabase: default privileges are set BEFORE migrations, so every new table/view/function
+// is granted to the browser roles and migrations then narrow with revoke/grant. Never re-grant
+// after migrating: it would undo the column-level lesson protection.
+const SUPABASE_DEFAULT_PRIVILEGES = `
+  grant usage on schema public to anon, authenticated;
+  alter default privileges in schema public grant select, insert, update, delete on tables to anon, authenticated;
+  alter default privileges in schema public grant execute on functions to anon, authenticated;
+`;
+
+// auth schema is created by the stubs, so it needs explicit grants (after migrate is fine).
+const SUPABASE_AUTH_GRANTS = `
+  grant usage on schema auth to anon, authenticated;
+  grant execute on all functions in schema auth to anon, authenticated;
 `;
 
 export async function createTestDb(): Promise<{ client: PGlite; db: Db }> {
   const client = new PGlite();
   await client.exec(SUPABASE_STUBS);
+  await client.exec(SUPABASE_DEFAULT_PRIVILEGES);
   const db = drizzle(client, { schema });
   await migrate(db, { migrationsFolder: 'drizzle' });
-  await client.exec(SUPABASE_GRANTS);
+  await client.exec(SUPABASE_AUTH_GRANTS);
   return { client, db: db as unknown as Db };
 }
 

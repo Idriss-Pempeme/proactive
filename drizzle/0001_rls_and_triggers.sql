@@ -1,13 +1,13 @@
 -- Helper: is the current JWT user an admin? (security definer: bypasses RLS on profiles)
 create or replace function public.is_admin() returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = '' as $$
   select exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
 $$;
 --> statement-breakpoint
 
 -- Create a profile row for every new auth user.
 create or replace function public.handle_new_user() returns trigger
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = '' as $$
 begin
   insert into public.profiles (id, display_name)
   values (
@@ -31,6 +31,7 @@ begin
      and not public.is_admin() then
     raise exception 'role and is_house are admin-managed' using errcode = '42501';
   end if;
+  new.created_at := old.created_at;
   new.updated_at := now();
   return new;
 end $$;
@@ -52,9 +53,13 @@ alter table public.lessons enable row level security;
 alter table public.enrollments enable row level security;
 --> statement-breakpoint
 
--- Public, non-sensitive profile fields.
+-- Definer rights are intentional: the view exposes only these columns, and only for people with a published course.
 create view public.public_profiles as
-  select id, display_name, avatar_path, headline, bio, role, is_house from public.profiles;
+  select p.id, p.display_name, p.avatar_path, p.headline, p.bio
+  from public.profiles p
+  where exists (select 1 from public.courses c where c.instructor_id = p.id and c.status = 'published');
+--> statement-breakpoint
+revoke all on public.public_profiles from anon, authenticated;
 --> statement-breakpoint
 grant select on public.public_profiles to anon, authenticated;
 --> statement-breakpoint
@@ -94,3 +99,10 @@ create policy enrollments_read on public.enrollments for select to authenticated
   using (user_id = auth.uid()
     or exists (select 1 from public.courses c where c.id = course_id and c.instructor_id = auth.uid())
     or public.is_admin());
+--> statement-breakpoint
+
+-- RLS filters rows, not columns: keep lesson content (body, mux_playback_id) away from browser roles.
+-- Content is served server-side after an entitlement check.
+revoke select on public.lessons from anon, authenticated;
+--> statement-breakpoint
+grant select (id, section_id, position, title, kind, is_preview, duration_seconds) on public.lessons to anon, authenticated;
