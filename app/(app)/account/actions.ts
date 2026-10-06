@@ -45,7 +45,12 @@ export async function uploadAvatarAction(_: FormState, fd: FormData): Promise<Fo
   const { error } = await supabase.storage.from('avatars').upload(path, bytes, { contentType: check.contentType, upsert: false });
   if (error) return { message: 'Le téléversement a échoué. Réessayez.' };
 
-  await db.update(profiles).set({ avatarPath: path }).where(eq(profiles.id, profile.id));
+  try {
+    await db.update(profiles).set({ avatarPath: path }).where(eq(profiles.id, profile.id));
+  } catch {
+    await supabase.storage.from('avatars').remove([path]); // roll back the orphaned upload
+    return { message: 'Le téléversement a échoué. Réessayez.' };
+  }
   if (profile.avatarPath) await supabase.storage.from('avatars').remove([profile.avatarPath]);
   updateTag(COURSES_TAG);
   return { ok: true, message: 'Photo mise à jour.' };
