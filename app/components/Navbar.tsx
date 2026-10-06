@@ -209,7 +209,12 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
           )}
         </div>
 
-        <div className="nav-drawer-auth">
+        <div
+          className="nav-drawer-auth"
+          onClick={(e) => {
+            if ((e.target as HTMLElement).closest('a, button[type="submit"]')) setMenuOpen(false);
+          }}
+        >
           {drawerAuthSlot}
         </div>
       </div>

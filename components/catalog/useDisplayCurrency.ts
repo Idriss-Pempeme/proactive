@@ -12,7 +12,11 @@ function loadRates(): Promise<Rates> {
   ratesPromise ??= fetch('/api/rates')
     .then((r) => (r.ok ? r.json() : null))
     .then(coerceRates)
-    .catch(() => ({}));
+    .catch((): Rates => ({}))
+    .then((rates) => {
+      if (Object.keys(rates).length === 0) ratesPromise = null;
+      return rates;
+    });
   return ratesPromise;
 }
 
