@@ -6,6 +6,10 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  experimental: {
+    // Avatar uploads: 2 MB image + multipart overhead.
+    serverActions: { bodySizeLimit: '3mb' },
+  },
   images: {
     qualities: [75, 100],
     remotePatterns: supabaseHost
