@@ -50,13 +50,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <PageLoader />
-        {/* usePathname() is runtime data on dynamic routes (/courses/[slug]); it must stream inside Suspense. */}
-        <Suspense fallback={null}>
-          <Navbar
-            authSlot={<Suspense fallback={<GuestLinks variant="bar" />}><AuthStatus variant="bar" /></Suspense>}
-            drawerAuthSlot={<Suspense fallback={<GuestLinks variant="drawer" />}><AuthStatus variant="drawer" /></Suspense>}
-          />
-        </Suspense>
+        <Navbar
+          authSlot={<Suspense fallback={<GuestLinks variant="bar" />}><AuthStatus variant="bar" /></Suspense>}
+          drawerAuthSlot={<Suspense fallback={<GuestLinks variant="drawer" />}><AuthStatus variant="drawer" /></Suspense>}
+        />
         <main>{children}</main>
         <Footer />
         <ScrollToTop />

@@ -1,16 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, Suspense, type ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-const NAV_LINKS = [
-  { href: '/', label: 'Accueil' },
-  { href: '/about', label: 'À propos' },
-  { href: '/courses', label: 'Formations' },
-  { href: '/livres', label: 'Livres' },
-  { href: '#', label: 'Contact', hash: true },
-];
+import { CloseOnRouteChange } from './CloseOnRouteChange';
+import { NavLinks, StaticNavLinks } from './NavLinks';
 
 function SunIcon() {
   return (
@@ -50,7 +43,6 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const pathname = usePathname();
 
   // The inline script in the root layout already resolved the theme before
   // paint, so the DOM attribute is the source of truth, not localStorage.
@@ -82,13 +74,6 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close the mobile menu on navigation (adjust state during render, not in an effect).
-  const [menuPathname, setMenuPathname] = useState(pathname);
-  if (menuPathname !== pathname) {
-    setMenuPathname(pathname);
-    setMenuOpen(false);
-  }
-
   useEffect(() => {
     if (!menuOpen) return;
 
@@ -112,10 +97,11 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
     };
   }, [menuOpen]);
 
-  const isActive = (href: string) => !href.includes('#') && (pathname === href || (href !== '/' && pathname.startsWith(`${href}/`)));
-
   return (
     <>
+      <Suspense fallback={null}>
+        <CloseOnRouteChange onChange={() => setMenuOpen(false)} />
+      </Suspense>
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="container nav-inner">
           <Link href="/" className="nav-logo">
@@ -123,19 +109,9 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
             <span className="brand-subtitle">Services</span>
           </Link>
 
-          <div className="nav-links">
-            {NAV_LINKS.map((link) =>
-              link.hash ? (
-                <a key={link.href} href={link.href}>
-                  {link.label}
-                </a>
-              ) : (
-                <Link key={link.href} href={link.href} className={isActive(link.href) ? 'active' : ''}>
-                  {link.label}
-                </Link>
-              )
-            )}
-          </div>
+          <Suspense fallback={<StaticNavLinks variant="bar" />}>
+            <NavLinks variant="bar" />
+          </Suspense>
 
           <div className="nav-actions">
             {authSlot}
@@ -190,24 +166,9 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
           </button>
         </div>
 
-        <div className="nav-drawer-links">
-          {NAV_LINKS.map((link) =>
-            link.hash ? (
-              <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>
-                {link.label}
-              </a>
-            ) : (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={isActive(link.href) ? 'active' : ''}
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            )
-          )}
-        </div>
+        <Suspense fallback={<StaticNavLinks variant="drawer" onNavigate={() => setMenuOpen(false)} />}>
+          <NavLinks variant="drawer" onNavigate={() => setMenuOpen(false)} />
+        </Suspense>
 
         <div
           className="nav-drawer-auth"

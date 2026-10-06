@@ -14,4 +14,13 @@ describe('renderMarkdown', () => {
   it('makes links safe', () => {
     expect(renderMarkdown('[site](https://example.com)')).toContain('rel="noopener noreferrer nofollow"');
   });
+  it('neutralises a standalone javascript: link', () => {
+    expect(renderMarkdown('[x](javascript:alert(1))')).not.toContain('javascript:');
+  });
+  it('demotes h1 to h2', () => {
+    expect(renderMarkdown('# Titre')).toContain('<h2>Titre</h2>');
+  });
+  it('keeps strikethrough', () => {
+    expect(renderMarkdown('~~old~~')).toContain('<del>old</del>');
+  });
 });

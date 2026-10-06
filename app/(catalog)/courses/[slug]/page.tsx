@@ -66,7 +66,7 @@ async function CourseView({ params }: { params: PageProps<'/courses/[slug]'>['pa
           </div>
           <aside className={styles.card} aria-label="Inscription">
             <div className={styles.cardMedia}>
-              <Image src={thumbnailUrl(course.thumbnailPath)} alt="" fill sizes="(max-width: 1024px) 100vw, 360px" priority />
+              <Image src={thumbnailUrl(course.thumbnailPath)} alt="" fill sizes="(max-width: 1024px) 100vw, 360px" preload />
             </div>
             <div className={styles.cardBody}>
               <Price cents={course.priceCents} size="lg" />
