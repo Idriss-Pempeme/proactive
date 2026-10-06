@@ -25,7 +25,7 @@ async function loadCourse(params: PageProps<'/courses/[slug]'>['params']) {
 
 export async function generateMetadata({ params }: PageProps<'/courses/[slug]'>): Promise<Metadata> {
   const course = await loadCourse(params);
-  if (!course) return { title: 'Formation introuvable | Proactive Académie' };
+  if (!course) return { title: 'Formation introuvable | Proactive Académie', robots: { index: false } };
   return {
     title: `${course.title} | Proactive Académie`,
     description: course.subtitle,

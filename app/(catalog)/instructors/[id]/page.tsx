@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps<'/instructors/[id]'
   const p = await load(params);
   return p
     ? { title: `${p.displayName} | Formateur Proactive Académie`, description: p.headline ?? undefined }
-    : { title: 'Formateur introuvable | Proactive Académie' };
+    : { title: 'Formateur introuvable | Proactive Académie', robots: { index: false } };
 }
 
 async function InstructorView({ params }: { params: PageProps<'/instructors/[id]'>['params'] }) {
@@ -49,7 +49,7 @@ async function InstructorView({ params }: { params: PageProps<'/instructors/[id]
       </header>
       <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', marginBottom: 32 }}>
         {stat(String(p.stats.courses), p.stats.courses > 1 ? 'formations' : 'formation')}
-        {stat(String(p.stats.students), 'apprenants')}
+        {stat(String(p.stats.students), p.stats.students > 1 ? 'apprenants' : 'apprenant')}
         {p.stats.ratingAvg !== null && stat(p.stats.ratingAvg.toFixed(1), 'note moyenne')}
       </div>
       {p.bio && <p style={{ maxWidth: 760, lineHeight: 1.8, marginBottom: 48, whiteSpace: 'pre-line' }}>{p.bio}</p>}
