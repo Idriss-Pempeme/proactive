@@ -5,6 +5,7 @@ import { cache } from 'react';
 import { db } from '@/lib/db/client';
 import { profiles, type Role } from '@/lib/db/schema';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { displayNameFor } from './display-name';
 import { hasRole } from './roles';
 
 export type Profile = typeof profiles.$inferSelect;
@@ -21,9 +22,7 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
   const [existing] = await db.select().from(profiles).where(eq(profiles.id, user.id)).limit(1);
   if (existing) return existing;
   // Self-heal if the signup trigger did not run (e.g. user created before migrations).
-  const raw: unknown = user.user_metadata?.display_name;
-  const fromMeta = typeof raw === 'string' ? raw.trim() : '';
-  const displayName = fromMeta || user.email?.split('@')[0] || 'Apprenant';
+  const displayName = displayNameFor(user.user_metadata, user.email);
   const [created] = await db.insert(profiles).values({ id: user.id, displayName }).onConflictDoNothing().returning();
   return created ?? (await db.select().from(profiles).where(eq(profiles.id, user.id)).limit(1))[0] ?? null;
 });

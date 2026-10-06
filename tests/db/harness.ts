@@ -44,13 +44,14 @@ export async function createTestDb(): Promise<{ client: PGlite; db: Db }> {
 
 export async function createUser(
   client: PGlite,
-  opts: { email: string; displayName?: string; id?: string },
+  opts: { email: string; displayName?: string; id?: string; metadata?: Record<string, unknown> },
 ): Promise<string> {
   const id = opts.id ?? crypto.randomUUID();
+  const metadata = { ...opts.metadata, ...(opts.displayName ? { display_name: opts.displayName } : {}) };
   await client.query('insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, $3)', [
     id,
     opts.email,
-    JSON.stringify(opts.displayName ? { display_name: opts.displayName } : {}),
+    JSON.stringify(metadata),
   ]);
   return id;
 }

@@ -12,7 +12,16 @@ begin
   insert into public.profiles (id, display_name)
   values (
     new.id,
-    coalesce(nullif(trim(new.raw_user_meta_data->>'display_name'), ''), split_part(new.email, '@', 1), 'Apprenant')
+    -- display_name (email signup), full_name / name (Google, other OAuth), then the email local part.
+    -- Anything under the 2-character minimum (profiles_display_name_len) becomes 'Apprenant'.
+    (select case when char_length(n) >= 2 then left(n, 80) else 'Apprenant' end
+     from (select coalesce(
+       nullif(trim(new.raw_user_meta_data->>'display_name'), ''),
+       nullif(trim(new.raw_user_meta_data->>'full_name'), ''),
+       nullif(trim(new.raw_user_meta_data->>'name'), ''),
+       nullif(split_part(new.email, '@', 1), ''),
+       'Apprenant'
+     ) as n) as candidate)
   )
   on conflict (id) do nothing;
   return new;
@@ -24,7 +33,7 @@ create trigger on_auth_user_created after insert on auth.users
 
 -- role / is_house are admin-managed: browser roles cannot change them.
 create or replace function public.protect_profile_privileges() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 begin
   if (new.role is distinct from old.role or new.is_house is distinct from old.is_house)
      and current_user in ('authenticated', 'anon')
@@ -70,6 +79,25 @@ create policy profiles_select on public.profiles for select to authenticated
 create policy profiles_update on public.profiles for update to authenticated
   using (id = auth.uid() or public.is_admin())
   with check (id = auth.uid() or public.is_admin());
+--> statement-breakpoint
+
+-- Column-level: the browser may only edit its public text fields. avatar_path is set by the server
+-- after a validated upload; role / is_house are admin-managed and changed server-side as the owner.
+-- The protect_profile_privileges trigger stays as defence in depth.
+revoke update on public.profiles from anon, authenticated;
+--> statement-breakpoint
+grant update (display_name, headline, bio) on public.profiles to authenticated;
+--> statement-breakpoint
+
+-- Same limits as lib/account/schemas.ts, enforced for every writer (browser and server).
+alter table public.profiles add constraint profiles_display_name_len
+  check (char_length(display_name) between 2 and 80);
+--> statement-breakpoint
+alter table public.profiles add constraint profiles_headline_len
+  check (headline is null or char_length(headline) <= 120);
+--> statement-breakpoint
+alter table public.profiles add constraint profiles_bio_len
+  check (bio is null or char_length(bio) <= 2000);
 --> statement-breakpoint
 
 create policy categories_read on public.categories for select to anon, authenticated using (true);

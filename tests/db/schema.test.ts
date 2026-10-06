@@ -25,6 +25,24 @@ describe('profile trigger', () => {
     const [p] = await db.select().from(profiles).where(eq(profiles.id, id));
     expect(p.displayName).toBe('kofi.mensah');
   });
+
+  it('uses full_name (Google) when display_name is absent', async () => {
+    const id = await createUser(client, { email: 'g-user@test.dev', metadata: { full_name: 'Aminata Traoré', name: 'Ami' } });
+    const [p] = await db.select().from(profiles).where(eq(profiles.id, id));
+    expect(p.displayName).toBe('Aminata Traoré');
+  });
+
+  it('uses name when display_name and full_name are blank', async () => {
+    const id = await createUser(client, { email: 'n-user@test.dev', metadata: { display_name: ' ', full_name: '', name: 'Kwame' } });
+    const [p] = await db.select().from(profiles).where(eq(profiles.id, id));
+    expect(p.displayName).toBe('Kwame');
+  });
+
+  it('falls back to Apprenant when the computed name is shorter than 2 characters', async () => {
+    const id = await createUser(client, { email: 'x@test.dev' });
+    const [p] = await db.select().from(profiles).where(eq(profiles.id, id));
+    expect(p.displayName).toBe('Apprenant');
+  });
 });
 
 describe('privilege protection', () => {
@@ -33,9 +51,59 @@ describe('privilege protection', () => {
     await asUser(client, id, () => client.query(`update public.profiles set bio = 'Bonjour' where id = $1`, [id]));
     await expect(
       asUser(client, id, () => client.query(`update public.profiles set role = 'admin' where id = $1`, [id])),
-    ).rejects.toThrow(/admin-managed/);
+    ).rejects.toThrow(/permission denied|admin-managed/);
     const [p] = await db.select().from(profiles).where(eq(profiles.id, id));
     expect(p).toMatchObject({ bio: 'Bonjour', role: 'student' });
+  });
+
+  it('lets a user edit display_name and headline on their own row', async () => {
+    const id = await createUser(client, { email: 'editor@test.dev' });
+    await asUser(client, id, () =>
+      client.query(`update public.profiles set display_name = 'Nouveau Nom', headline = 'Négociant' where id = $1`, [id]),
+    );
+    const [p] = await db.select().from(profiles).where(eq(profiles.id, id));
+    expect(p).toMatchObject({ displayName: 'Nouveau Nom', headline: 'Négociant' });
+  });
+
+  it('denies browser writes to avatar_path (only the server sets it)', async () => {
+    const id = await createUser(client, { email: 'avatar-sneak@test.dev' });
+    await expect(
+      asUser(client, id, () => client.query(`update public.profiles set avatar_path = 'x/evil.png' where id = $1`, [id])),
+    ).rejects.toThrow(/permission denied/);
+  });
+
+  it('denies anonymous updates to profiles', async () => {
+    const id = await createUser(client, { email: 'anon-target@test.dev' });
+    await expect(
+      asUser(client, null, () => client.query(`update public.profiles set bio = 'x' where id = $1`, [id])),
+    ).rejects.toThrow(/permission denied/);
+  });
+});
+
+describe('profile check constraints', () => {
+  it('rejects a 1-character display_name, even from the owner connection', async () => {
+    const id = await createUser(client, { email: 'short-name@test.dev' });
+    await expect(client.query(`update public.profiles set display_name = 'A' where id = $1`, [id])).rejects.toThrow(
+      /profiles_display_name_len/,
+    );
+  });
+
+  it('rejects a display_name longer than 80 characters', async () => {
+    const id = await createUser(client, { email: 'long-name@test.dev' });
+    await expect(
+      client.query(`update public.profiles set display_name = $2 where id = $1`, [id, 'a'.repeat(81)]),
+    ).rejects.toThrow(/profiles_display_name_len/);
+  });
+
+  it('rejects a headline over 120 and a bio over 2000 characters', async () => {
+    const id = await createUser(client, { email: 'long-bio@test.dev' });
+    await expect(
+      client.query(`update public.profiles set headline = $2 where id = $1`, [id, 'h'.repeat(121)]),
+    ).rejects.toThrow(/profiles_headline_len/);
+    await expect(
+      client.query(`update public.profiles set bio = $2 where id = $1`, [id, 'b'.repeat(2001)]),
+    ).rejects.toThrow(/profiles_bio_len/);
+    await client.query(`update public.profiles set headline = $2, bio = $3 where id = $1`, [id, 'h'.repeat(120), 'b'.repeat(2000)]);
   });
 });
 
@@ -110,7 +178,7 @@ describe('profiles (RLS)', () => {
     const id = await createUser(client, { email: 'house@test.dev' });
     await expect(
       asUser(client, id, () => client.query(`update public.profiles set is_house = true where id = $1`, [id])),
-    ).rejects.toThrow(/admin-managed/);
+    ).rejects.toThrow(/permission denied|admin-managed/);
   });
 });
 
@@ -157,15 +225,20 @@ describe('draft course curriculum visibility', () => {
 });
 
 describe('admin powers', () => {
-  it('lets an admin change roles and insert categories; others cannot insert categories', async () => {
-    const admin = await createUser(client, { email: 'admin@test.dev' });
+  it('rejects role changes from an admin browser session (they happen server-side as the owner)', async () => {
+    const admin = await createUser(client, { email: 'admin-browser@test.dev' });
     await db.update(profiles).set({ role: 'admin' }).where(eq(profiles.id, admin));
     const target = await createUser(client, { email: 'promote-me@test.dev' });
-    await asUser(client, admin, () =>
-      client.query(`update public.profiles set role = 'instructor' where id = $1`, [target]),
-    );
+    await expect(
+      asUser(client, admin, () => client.query(`update public.profiles set role = 'instructor' where id = $1`, [target])),
+    ).rejects.toThrow(/permission denied|admin-managed/);
     const [p] = await db.select().from(profiles).where(eq(profiles.id, target));
-    expect(p.role).toBe('instructor');
+    expect(p.role).toBe('student');
+  });
+
+  it('lets an admin insert categories; others cannot insert categories', async () => {
+    const admin = await createUser(client, { email: 'admin@test.dev' });
+    await db.update(profiles).set({ role: 'admin' }).where(eq(profiles.id, admin));
     await asUser(client, admin, () =>
       client.query(`insert into public.categories (slug, name) values ('admin-cat', 'Admin')`),
     );

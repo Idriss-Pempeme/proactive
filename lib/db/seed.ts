@@ -1,13 +1,23 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { categories, courses, lessons, profiles, sections } from './schema';
 import { SEED_CATEGORIES, SEED_COURSES } from './seed-data';
 import type { Db } from './types';
 
 export async function seedCatalog(db: Db, houseInstructorId: string) {
-  await db
-    .update(profiles)
-    .set({ role: 'instructor', isHouse: true, displayName: 'Proactive Académie', headline: 'Négoce et commerce international des matières premières africaines' })
-    .where(eq(profiles.id, houseInstructorId));
+  await db.transaction(async (tx) => {
+    // Branding only on the first seed (the account is not yet the house account), so a name or
+    // headline edited later by the team survives re-seeds.
+    await tx
+      .update(profiles)
+      .set({ displayName: 'Proactive Académie', headline: 'Négoce et commerce international des matières premières africaines' })
+      .where(and(eq(profiles.id, houseInstructorId), eq(profiles.isHouse, false)));
+    // Promote students only: never demote an admin (or touch an existing instructor).
+    await tx
+      .update(profiles)
+      .set({ role: 'instructor' })
+      .where(and(eq(profiles.id, houseInstructorId), eq(profiles.role, 'student')));
+    await tx.update(profiles).set({ isHouse: true }).where(eq(profiles.id, houseInstructorId));
+  });
 
   for (const [i, c] of SEED_CATEGORIES.entries()) {
     await db
