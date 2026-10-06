@@ -10,9 +10,18 @@ function requireEnv(name: string): string {
 }
 
 const file = process.argv[2];
-if (!file) throw new Error("usage: tsx scripts/apply-sql.ts <file.sql>");
+if (!file) {
+  console.error("usage: tsx scripts/apply-sql.ts <file.sql>");
+  process.exitCode = 1;
+  process.exit();
+}
+
 const sql = postgres(requireEnv("DIRECT_DATABASE_URL"), { max: 1 });
 sql
   .unsafe(readFileSync(file, "utf8"))
   .then(() => console.log("Applied", file))
+  .catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  })
   .finally(() => sql.end());

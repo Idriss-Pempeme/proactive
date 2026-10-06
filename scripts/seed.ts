@@ -25,11 +25,21 @@ async function main() {
   );
 
   // Find or create the house account (no password: owner sets it via "mot de passe oublié").
-  const { data: list, error: listErr } = await supabase.auth.admin.listUsers({
-    perPage: 1000,
-  });
-  if (listErr) throw listErr;
-  let houseId = list.users.find((u) => u.email === HOUSE_EMAIL)?.id;
+  let houseId: string | undefined;
+  for (let page = 1; ; page++) {
+    const { data, error } = await supabase.auth.admin.listUsers({
+      page,
+      perPage: 1000,
+    });
+    if (error) throw error;
+    const hit = data.users.find((u) => u.email === HOUSE_EMAIL);
+    if (hit) {
+      houseId = hit.id;
+      break;
+    }
+    if (data.users.length < 1000) break;
+  }
+
   if (!houseId) {
     const { data, error } = await supabase.auth.admin.createUser({
       email: HOUSE_EMAIL,
