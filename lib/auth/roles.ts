@@ -13,7 +13,10 @@ export function safeNextPath(next: string | null | undefined, fallback = '/learn
     const base = 'http://local.invalid';
     const url = new URL(next, base);
     if (url.origin !== base) return fallback;
-    return `${url.pathname}${url.search}${url.hash}`;
+    const out = `${url.pathname}${url.search}${url.hash}`;
+    // Dot-segments can normalise into a protocol-relative URL (e.g. "/.//evil.com").
+    if (out.startsWith('//') || out.startsWith('/\\')) return fallback;
+    return out;
   } catch {
     return fallback;
   }

@@ -17,9 +17,11 @@ describe('safeNextPath', () => {
   });
   it.each([
     'https://evil.com', '//evil.com', '/\\evil.com', '\\\\evil.com', 'javascript:alert(1)', 'evil.com', '', null, undefined,
+    '/.//evil.com', '/..//evil.com', '/a/..//evil.com', '/./\\evil.com',
   ])('rejects %j', (value) => {
     expect(safeNextPath(value)).toBe('/learn');
   });
+  it('still normalises same-site dot-segments', () => expect(safeNextPath('/courses/../learn')).toBe('/learn'));
   it('uses a custom fallback', () => expect(safeNextPath('//x', '/')).toBe('/'));
 });
 
