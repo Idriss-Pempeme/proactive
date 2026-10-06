@@ -1695,3 +1695,14 @@ h3 { font-size: clamp(1.375rem, 2.5vw, 2.5rem); }
 }
 .user-menu-panel a:hover, .user-menu-panel button:hover { background: var(--bg-card-hover); }
 .user-menu-drawer { display: grid; gap: 10px; }
+
+/* ========== CURRICULUM ========== */
+.curriculum { display: grid; gap: 8px; }
+.curriculum-section { border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-card); }
+.curriculum-section summary {
+  display: flex; justify-content: space-between; gap: 16px; padding: 14px 16px; cursor: pointer; font-weight: 700; flex-wrap: wrap;
+}
+.curriculum-section ul { list-style: none; margin: 0; padding: 0 16px 12px; }
+.curriculum-section li { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid var(--border-subtle); }
+.curriculum-meta { display: inline-flex; gap: 10px; color: var(--text-muted); white-space: nowrap; font-size: 0.875rem; }
+.curriculum-preview { color: var(--emerald-light); font-weight: 600; }
