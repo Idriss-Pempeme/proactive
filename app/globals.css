@@ -1673,3 +1673,25 @@ h3 { font-size: clamp(1.375rem, 2.5vw, 2.5rem); }
     transform: none !important;
   }
 }
+
+/* ========== USER MENU ========== */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.user-menu { position: relative; }
+.user-menu-trigger {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
+  background: var(--tint-emerald); color: var(--on-tint-emerald); border: 1px solid var(--border-gold);
+  font-weight: 700; font-size: 0.85rem; cursor: pointer;
+}
+.user-menu-trigger img { width: 100%; height: 100%; object-fit: cover; }
+.user-menu-panel {
+  position: absolute; right: 0; top: calc(100% + 10px); min-width: 220px; z-index: 50;
+  display: grid; padding: 8px; border-radius: 12px; background: var(--panel-bg); border: 1px solid var(--border-gold);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.user-menu-name { padding: 8px 12px; font-weight: 700; border-bottom: 1px solid var(--border-subtle); margin-bottom: 4px; }
+.user-menu-panel a, .user-menu-panel button {
+  display: block; width: 100%; text-align: left; padding: 10px 12px; border-radius: 8px;
+  color: var(--text-main); background: none; border: 0; font: inherit; cursor: pointer;
+}
+.user-menu-panel a:hover, .user-menu-panel button:hover { background: var(--bg-card-hover); }
+.user-menu-drawer { display: grid; gap: 10px; }

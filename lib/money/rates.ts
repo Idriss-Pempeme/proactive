@@ -35,3 +35,14 @@ export async function fetchLiveRates(fetchImpl: typeof fetch = fetch): Promise<R
     throw new Error('Unknown error fetching rates');
   }
 }
+
+/** Validate rates received from our own /api/rates endpoint (already EUR-based). */
+export function coerceRates(json: unknown): Rates {
+  const out: Rates = {};
+  if (typeof json !== 'object' || json === null) return out;
+  for (const code of DISPLAY_CURRENCIES) {
+    const value = (json as Record<string, unknown>)[code];
+    if (typeof value === 'number' && Number.isFinite(value) && value > 0) out[code] = value;
+  }
+  return out;
+}

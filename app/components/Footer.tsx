@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { cacheLife } from 'next/cache';
+import { CurrencySelector } from './CurrencySelector';
 
 export default async function Footer() {
   'use cache';
@@ -41,6 +42,10 @@ export default async function Footer() {
 
         <div className="footer-bottom">
           <div>&copy; {year} Proactive Services. Tous droits réservés.</div>
+          <div style={{ display: 'grid', gap: 6 }}>
+            <CurrencySelector />
+            <span className="text-muted" style={{ fontSize: '0.8rem' }}>Paiements en euros. Conversion indicative.</span>
+          </div>
           <div style={{ display: 'flex', gap: '20px' }}>
             <a href="#">Mentions Légales</a>
             <a href="#">Politique de Confidentialité</a>

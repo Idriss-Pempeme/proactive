@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
   { href: '/', label: 'Accueil' },
   { href: '/about', label: 'À propos' },
-  { href: '/#formations', label: 'Formations', hash: true },
+  { href: '/courses', label: 'Formations' },
   { href: '/livres', label: 'Livres' },
   { href: '#', label: 'Contact', hash: true },
 ];
@@ -45,7 +45,7 @@ function CloseIcon() {
   );
 }
 
-export default function Navbar() {
+export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNode; drawerAuthSlot: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
@@ -112,7 +112,7 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  const isActive = (href: string) => !href.includes('#') && pathname === href;
+  const isActive = (href: string) => !href.includes('#') && (pathname === href || (href !== '/' && pathname.startsWith(`${href}/`)));
 
   return (
     <>
@@ -138,10 +138,7 @@ export default function Navbar() {
           </div>
 
           <div className="nav-actions">
-            <div className="nav-auth">
-              <a href="#" className="nav-auth-login">Connexion</a>
-              <a href="#" className="nav-auth-signup">Créer un compte</a>
-            </div>
+            {authSlot}
 
             {mounted && (
               <button
@@ -213,12 +210,7 @@ export default function Navbar() {
         </div>
 
         <div className="nav-drawer-auth">
-          <a href="#" className="btn btn-secondary" onClick={() => setMenuOpen(false)}>
-            Connexion
-          </a>
-          <a href="#" className="btn btn-primary" onClick={() => setMenuOpen(false)}>
-            Créer un compte
-          </a>
+          {drawerAuthSlot}
         </div>
       </div>
     </>

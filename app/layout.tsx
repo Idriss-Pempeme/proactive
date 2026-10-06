@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from 'next';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import './globals.css';
 import Navbar from './components/Navbar';
+import { AuthStatus, GuestLinks } from './components/AuthStatus';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import PageLoader from './components/PageLoader';
@@ -49,7 +50,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <PageLoader />
-        <Navbar />
+        <Navbar
+          authSlot={<Suspense fallback={<GuestLinks variant="bar" />}><AuthStatus variant="bar" /></Suspense>}
+          drawerAuthSlot={<Suspense fallback={<GuestLinks variant="drawer" />}><AuthStatus variant="drawer" /></Suspense>}
+        />
         <main>{children}</main>
         <Footer />
         <ScrollToTop />

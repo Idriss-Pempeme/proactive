@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CFA_PER_EUR } from './currencies';
-import { fetchLiveRates, parseRates } from './rates';
+import { coerceRates, fetchLiveRates, parseRates } from './rates';
 
 const good = {
   result: 'success',
@@ -57,5 +57,13 @@ describe('fetchLiveRates', () => {
     const ok = vi.fn().mockResolvedValue(Response.json(good)) as unknown as typeof fetch;
     await fetchLiveRates(ok);
     expect(ok).toHaveBeenCalledWith('https://open.er-api.com/v6/latest/EUR', expect.any(Object));
+  });
+});
+
+describe('coerceRates', () => {
+  it('keeps only supported positive numbers', () => {
+    expect(coerceRates({ USD: 1.1, GBP: '0.8', JPY: 160, EUR: 1, KES: -1 })).toEqual({ USD: 1.1, EUR: 1 });
+    expect(coerceRates(null)).toEqual({});
+    expect(coerceRates('nope')).toEqual({});
   });
 });
