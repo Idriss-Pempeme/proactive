@@ -101,6 +101,8 @@ proxy.ts                          session refresh + optimistic redirects
   service-role key is never exposed to the browser. Browser Supabase client is
   used only for auth flows.
 - Roles change only via admin action (Phase 4 UI; Phase 1 via seed/SQL).
+- The `db` client is lazy: the connection is created on first query, so
+  importing it (e.g. at build time) never requires `DATABASE_URL`.
 
 ## 4. Data model (Phase 1 tables)
 
@@ -145,18 +147,23 @@ certificates, instructor applications.
 
 ### RLS policies
 - profiles: anyone can read public columns via a `public_profiles` view
-  (display_name, avatar_path, headline, bio, id); owner can update own row
+  (id, display_name, avatar_path, headline, bio only, and only for people with a
+  published course); owner can update own row
   except `role`/`is_house` (enforced by trigger); admin full access.
 - categories: public read; admin write.
 - courses/sections/lessons: public read when course `status = 'published'`;
   owning instructor reads/writes own; admin full.
 - enrollments: owner reads own; instructor reads enrollments of own courses;
   inserts only by server (service connection) — never from the browser.
+- lessons: `anon`/`authenticated` read lessons only through column grants
+  (no `body`, no `mux_playback_id`); the curriculum outline needs nothing more.
 
 ## 5. Features
 
 ### Auth
 - Email + password (with email confirmation), magic link, Google OAuth.
+- Signup does not reveal whether an email already has an account (same
+  response either way; email confirmation stays ON).
 - Forgot/reset password. Supabase SMTP configured to Resend (config, not code).
 - `next` param preserved through login so "Acheter" → login → back to course.
 - Navbar shows avatar menu (Mon apprentissage / Espace formateur (instructors) /
@@ -178,7 +185,7 @@ certificates, instructor applications.
   language, level.
 - Sticky purchase card: thumbnail/promo placeholder, price, CTA. Phase 1 CTA
   states: not signed in → "Se connecter pour s'inscrire"; enrolled →
-  "Accéder au cours"; free → "S'inscrire gratuitement" (creates enrollment);
+  "Vous êtes inscrit" + link to `/learn` until the Phase 2 player exists; free → "S'inscrire gratuitement" (creates enrollment);
   paid → "Acheter" disabled with "Paiement bientôt disponible" (wired in Phase 3).
 - "Ce que vous apprendrez", requirements, description (sanitised markdown),
   curriculum accordion (sections → lessons with duration and "Aperçu" badge),
@@ -192,8 +199,9 @@ certificates, instructor applications.
 
 ### Home page
 - Existing hero/sections kept; the hardcoded course grid becomes
-  "Formations populaires" from DB (top 8 by enrollment); stats counters read
-  real counts (courses, students, instructors) with cached query.
+  "Formations populaires" from DB (top 8 by enrollment). As built, the business
+  stats (partners, countries, learners trained, satisfaction) stay as company
+  claims; catalogue counts appear in the "Formations populaires" intro.
 - "Devenir formateur" CTA links to `/teach` (signed in) or signup.
 
 ### Currency display
@@ -210,19 +218,23 @@ certificates, instructor applications.
 - Rates: `https://open.er-api.com/v6/latest/EUR` (free, no key, EUR base,
   covers African currencies — the ECB feed lacks MAD/NGN/GHS/KES), served by a
   `GET /api/rates` route cached ~12 h. XOF/XAF always use the fixed peg
-  (655.957 per EUR). On fetch failure: show EUR only (never block rendering).
+  (655.957 per EUR). On fetch failure: show EUR only (never block rendering);
+  failed fetches are not cached, so the next request retries.
 - Rounding: whole units for all display currencies (approximate by design).
 
 ### Signed-in shells
 - `/learn`: enrolled courses list (cards linking to course page; player in Phase 2).
 - `/teach`: instructor-only; "Vos cours" list with status badges (builder Phase 2).
-  Students see a "Devenir formateur" explainer.
+  Students see a "Devenir formateur" explainer with a contact email; the
+  application flow is Phase 2.
 - `/admin`: admin-only; counts of users/courses/enrollments.
 - `/account`: edit display name, headline, bio, avatar upload (Storage, ≤ 2 MB,
   jpg/png/webp).
 
 ## 6. Error handling
-- `error.tsx` per route group with branded fallback; `not-found.tsx` kept.
+- A single root `app/error.tsx` with branded fallback (all route groups share the
+  root layout, so one boundary covers them); `not-found.tsx` kept. Uses the
+  Next 16.3 `retry` prop.
 - Server actions return typed `{ ok: true, data } | { ok: false, error }`;
   forms display field errors from Zod.
 - External dependency failures (ECB rates, Storage image) degrade gracefully;
@@ -233,8 +245,8 @@ certificates, instructor applications.
   resolution, search-param parsing (Zod), requireRole.
 - Vitest + PGlite: catalog query (search, each filter, each sort, pagination),
   course-by-slug visibility rules, enrollment uniqueness, profile-creation
-  trigger. RLS itself is verified against the hosted dev project with a
-  scripted check (PGlite lacks Supabase's auth schema).
+  trigger. RLS policies are tested in PGlite with a stubbed `auth` schema and
+  `anon`/`authenticated` roles; there is no separate hosted RLS script.
 - Playwright smoke: home renders popular courses; catalog search + filter;
   course page curriculum expands; signup → login → `/learn`; anonymous
   `/admin` redirects to login.
