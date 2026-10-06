@@ -60,9 +60,9 @@ export async function searchCourses(db: Db, q: CatalogQuery): Promise<{ items: C
   const where = and(...conds);
 
   const orderBy: SQL[] = {
-    popular: [desc(courses.enrollmentCount), desc(courses.publishedAt)],
+    popular: [desc(courses.enrollmentCount), sql`${courses.publishedAt} desc nulls last`],
     rating: [sql`${courses.ratingAvg} desc nulls last`, desc(courses.ratingCount)],
-    newest: [desc(courses.publishedAt)],
+    newest: [sql`${courses.publishedAt} desc nulls last`],
     price_asc: [asc(courses.priceCents)],
     price_desc: [desc(courses.priceCents)],
   }[q.sort];

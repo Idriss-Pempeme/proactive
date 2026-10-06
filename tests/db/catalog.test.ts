@@ -1,7 +1,7 @@
 import type { PGlite } from '@electric-sql/pglite';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { PAGE_SIZE, type CatalogQuery } from '@/lib/catalog/params';
+import { PAGE_SIZE, parseCatalogParams, type CatalogQuery } from '@/lib/catalog/params';
 import { getCourseBySlug, getInstructorPage, getPlatformStats, listCategories, searchCourses } from '@/lib/db/queries/catalog';
 import { courses, enrollments } from '@/lib/db/schema';
 import type { Db } from '@/lib/db/types';
@@ -40,8 +40,8 @@ describe('searchCourses', () => {
     expect(slugs(await searchCourses(db, q({ q: 'exportation cacao' })))).toEqual(['cacao']);
   });
 
-  it.each(['"', '&|!', "l'export", 'le la les', ')(*', 'x'.repeat(100)])('survives hostile query %j', async (text) => {
-    await expect(searchCourses(db, q({ q: text }))).resolves.toHaveProperty('items');
+  it.each(['"', '&|!', "l'export", 'le la les', ')(*', 'x'.repeat(100), 'a\u0000b'])('survives hostile query %j', async (text) => {
+    await expect(searchCourses(db, q({ q: parseCatalogParams({ q: text }).q }))).resolves.toHaveProperty('items');
   });
 
   it('filters by category, level and price', async () => {

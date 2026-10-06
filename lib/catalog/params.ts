@@ -19,7 +19,7 @@ export type CatalogQuery = {
 type RawParams = Record<string, string | string[] | undefined>;
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
-const qSchema = z.string().trim().min(1).transform((s) => s.slice(0, 100));
+const qSchema = z.string().transform((s) => s.replace(/[\u0000-\u001f\u007f]/g, ' ')).pipe(z.string().trim().min(1)).transform((s) => s.slice(0, 100));
 const slugSchema = z.string().regex(/^[a-z0-9-]{1,60}$/);
 const pageSchema = z.coerce.number().int().min(1).max(MAX_PAGE);
 

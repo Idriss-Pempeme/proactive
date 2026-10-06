@@ -28,4 +28,9 @@ describe('parseCatalogParams', () => {
   it('truncates very long queries to 100 chars', () => {
     expect(parseCatalogParams({ q: 'x'.repeat(500) }).q).toHaveLength(100);
   });
+
+  it('replaces control characters in q with spaces', () => {
+    expect(parseCatalogParams({ q: 'ca\u0000cao' }).q).toBe('ca cao');
+    expect(parseCatalogParams({ q: '\u0000\u0001' })).not.toHaveProperty('q');
+  });
 });
