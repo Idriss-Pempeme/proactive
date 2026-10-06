@@ -10,7 +10,7 @@ function createDb(): Db {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error('DATABASE_URL is not set');
   // prepare:false is required by Supabase's transaction pooler.
-  const client = globalForDb.pgClient ?? postgres(url, { prepare: false, max: 5 });
+  const client = globalForDb.pgClient ?? postgres(url, { prepare: false, max: 5, onnotice: () => {} });
   if (process.env.NODE_ENV !== 'production') globalForDb.pgClient = client;
   return drizzle(client, { schema });
 }

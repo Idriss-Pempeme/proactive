@@ -8,7 +8,7 @@ import { profileSchema } from '@/lib/account/schemas';
 import { requireUser } from '@/lib/auth/session';
 import { COURSES_TAG } from '@/lib/catalog/cached';
 import { db } from '@/lib/db/client';
-import { profiles } from '@/lib/db/schema';
+import { profiles, type Role } from '@/lib/db/schema';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export type FormState = {
@@ -19,6 +19,11 @@ export type FormState = {
   values?: Record<string, string>;
 };
 
+/** Only instructors and admins appear in the public catalog; a student edit must not purge it. */
+function refreshCatalogFor(role: Role) {
+  if (role !== 'student') updateTag(COURSES_TAG);
+}
+
 const text = (fd: FormData, k: string) => (typeof fd.get(k) === 'string' ? (fd.get(k) as string) : '');
 
 export async function updateProfileAction(_: FormState, fd: FormData): Promise<FormState> {
@@ -27,7 +32,7 @@ export async function updateProfileAction(_: FormState, fd: FormData): Promise<F
   const parsed = profileSchema.safeParse(values);
   if (!parsed.success) return { fieldErrors: z.flattenError(parsed.error).fieldErrors, values };
   await db.update(profiles).set(parsed.data).where(eq(profiles.id, profile.id));
-  updateTag(COURSES_TAG); // names appear on course cards and pages
+  refreshCatalogFor(profile.role); // names appear on course cards and pages
   return { ok: true, message: 'Profil mis à jour.' };
 }
 
@@ -52,6 +57,6 @@ export async function uploadAvatarAction(_: FormState, fd: FormData): Promise<Fo
     return { message: 'Le téléversement a échoué. Réessayez.' };
   }
   if (profile.avatarPath) await supabase.storage.from('avatars').remove([profile.avatarPath]);
-  updateTag(COURSES_TAG);
+  refreshCatalogFor(profile.role);
   return { ok: true, message: 'Photo mise à jour.' };
 }

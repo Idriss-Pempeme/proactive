@@ -1,4 +1,5 @@
 import { cacheLife } from 'next/cache';
+import { connection } from 'next/server';
 import { FIXED_RATES, fetchLiveRates } from '@/lib/money/rates';
 
 async function getRates() {
@@ -8,6 +9,9 @@ async function getRates() {
 }
 
 export async function GET() {
+  // Request-time handler: never prerendered, so a failed build-time fetch cannot freeze the fallback.
+  // getRates() stays 'use cache', so the upstream API is still hit at most every 12 h.
+  await connection();
   try {
     const rates = await getRates();
     return Response.json(rates);

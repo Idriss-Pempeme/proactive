@@ -2,12 +2,14 @@ import type { Metadata, Viewport } from 'next';
 import { Suspense, type ReactNode } from 'react';
 import './globals.css';
 import Navbar from './components/Navbar';
-import { AuthStatus, GuestLinks } from './components/AuthStatus';
+import { AuthPlaceholder, AuthStatus } from './components/AuthStatus';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import PageLoader from './components/PageLoader';
+import { siteUrl } from '@/lib/supabase/env';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: 'Proactive Services | Négoce · Formation · Opportunités',
   description:
     'Proactive Services - Créer des ponts entre l\'Afrique et les marchés internationaux. Formation professionnelle en négoce et commerce international des matières premières.',
@@ -51,8 +53,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <PageLoader />
         <Navbar
-          authSlot={<Suspense fallback={<GuestLinks variant="bar" />}><AuthStatus variant="bar" /></Suspense>}
-          drawerAuthSlot={<Suspense fallback={<GuestLinks variant="drawer" />}><AuthStatus variant="drawer" /></Suspense>}
+          authSlot={<Suspense fallback={<AuthPlaceholder />}><AuthStatus variant="bar" /></Suspense>}
+          drawerAuthSlot={<Suspense fallback={<AuthPlaceholder />}><AuthStatus variant="drawer" /></Suspense>}
         />
         <main>{children}</main>
         <Footer />

@@ -4,6 +4,7 @@ import type { CourseCardData } from '@/lib/db/queries/catalog';
 import { formatDuration } from '@/lib/duration';
 import { LEVEL_LABELS } from '@/lib/labels';
 import { thumbnailUrl } from '@/lib/media';
+import { plural } from '@/lib/plural';
 import styles from './CourseCard.module.css';
 import { Price } from './Price';
 import { Stars } from './Stars';
@@ -28,7 +29,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
           <span className={styles.new}>Nouveau</span>
         )}
         <span className={styles.meta}>
-          {formatDuration(course.totalDurationSeconds)} · {course.lessonCount} leçons · {LEVEL_LABELS[course.level]}
+          {formatDuration(course.totalDurationSeconds)} · {plural(course.lessonCount, 'leçon', 'leçons')} · {LEVEL_LABELS[course.level]}
         </span>
         <div className={styles.footer}>
           <Price cents={course.priceCents} />

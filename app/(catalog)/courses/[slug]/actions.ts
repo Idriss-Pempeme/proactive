@@ -4,7 +4,6 @@ import { updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { requireUser } from '@/lib/auth/session';
-import { COURSES_TAG } from '@/lib/catalog/cached';
 import { db } from '@/lib/db/client';
 import { enrollInFreeCourse } from '@/lib/db/queries/enrollment';
 
@@ -16,6 +15,7 @@ export async function enrollFreeAction(formData: FormData): Promise<void> {
   const { courseId, slug } = parsed.data;
   const profile = await requireUser(`/courses/${slug}`);
   const result = await enrollInFreeCourse(db, profile.id, courseId);
-  if (result === 'enrolled') updateTag(COURSES_TAG);
+  // Only this course page's count; catalog and home counts may lag by their cacheLife('minutes').
+  if (result === 'enrolled') updateTag(`course:${slug}`);
   redirect(result === 'enrolled' || result === 'already_enrolled' ? '/learn' : `/courses/${slug}`);
 }

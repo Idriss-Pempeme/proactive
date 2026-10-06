@@ -3,6 +3,7 @@ import Link from 'next/link';
 import HeroSlider from '@/app/components/HeroSlider';
 import { CourseGrid } from '@/components/catalog/CourseGrid';
 import { cachedPlatformStats, cachedPopularCourses } from '@/lib/catalog/cached';
+import { plural } from '@/lib/plural';
 import { HomeEffects } from './HomeEffects';
 
 function Stars({ className }: { className?: string }) {
@@ -51,9 +52,11 @@ export default async function HomePage() {
             <h2 style={{ fontSize: 'clamp(1.875rem, 4.5vw, 3rem)', marginBottom: '15px' }}>
               Formations <span style={{ color: 'var(--gold-main)' }}>populaires.</span>
             </h2>
-            <p className="text-lead" style={{ maxWidth: '700px', margin: 0 }}>
-              {stats.courses} formations par {stats.instructors} formateur{stats.instructors > 1 ? 's' : ''} pour propulser votre carrière dans le commerce international.
-            </p>
+            {stats.courses > 0 && (
+              <p className="text-lead" style={{ maxWidth: '700px', margin: 0 }}>
+                {plural(stats.courses, 'formation', 'formations')} par {plural(stats.instructors, 'formateur', 'formateurs')} pour propulser votre carrière dans le commerce international.
+              </p>
+            )}
           </div>
           {popular.length > 0 ? (
             <CourseGrid courses={popular} />
@@ -73,7 +76,7 @@ export default async function HomePage() {
             <p className="text-lead" style={{ maxWidth: '640px', margin: '0 auto 32px' }}>
               Publiez votre formation sur Proactive Académie et transmettez votre savoir-faire à une nouvelle génération de négociants.
             </p>
-            <Link href="/teach" className="btn btn-secondary">Devenir formateur</Link>
+            <Link href="/signup?next=%2Fteach" className="btn btn-secondary">Devenir formateur</Link>
           </div>
         </div>
       </section>

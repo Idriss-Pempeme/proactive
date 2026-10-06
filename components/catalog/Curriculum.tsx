@@ -1,5 +1,6 @@
 import type { CourseDetail } from '@/lib/db/queries/catalog';
 import { formatDuration } from '@/lib/duration';
+import { plural } from '@/lib/plural';
 
 const sum = (xs: number[]) => xs.reduce((t, x) => t + x, 0);
 
@@ -9,14 +10,14 @@ export function Curriculum({ sections }: { sections: CourseDetail['sections'] })
   return (
     <div className="curriculum">
       <p className="text-muted" style={{ margin: 0 }}>
-        {sections.length} sections · {lessonCount} leçons · {formatDuration(total)} au total
+        {plural(sections.length, 'section', 'sections')} · {plural(lessonCount, 'leçon', 'leçons')} · {formatDuration(total)} au total
       </p>
       {sections.map((s, i) => (
         <details key={s.id} open={i === 0} className="curriculum-section">
           <summary>
             <span>{s.title}</span>
             <span className="text-muted">
-              {s.lessons.length} leçons · {formatDuration(sum(s.lessons.map((l) => l.durationSeconds)))}
+              {plural(s.lessons.length, 'leçon', 'leçons')} · {formatDuration(sum(s.lessons.map((l) => l.durationSeconds)))}
             </span>
           </summary>
           <ul>

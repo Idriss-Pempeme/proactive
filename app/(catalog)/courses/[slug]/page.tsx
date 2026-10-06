@@ -11,6 +11,7 @@ import { cachedCourse } from '@/lib/catalog/cached';
 import { formatDuration } from '@/lib/duration';
 import { LEVEL_LABELS } from '@/lib/labels';
 import { renderMarkdown } from '@/lib/markdown';
+import { plural } from '@/lib/plural';
 import { avatarUrl, thumbnailUrl } from '@/lib/media';
 import styles from './course.module.css';
 
@@ -56,10 +57,10 @@ async function CourseView({ params }: { params: PageProps<'/courses/[slug]'>['pa
               ) : (
                 <span>Nouvelle formation</span>
               )}
-              {course.enrollmentCount > 0 && <span>{course.enrollmentCount} apprenants</span>}
+              {course.enrollmentCount > 0 && <span>{plural(course.enrollmentCount, 'apprenant', 'apprenants')}</span>}
               <span>Par <Link href={`/instructors/${course.instructor.id}`}>{course.instructor.displayName}</Link></span>
               <span>{LEVEL_LABELS[course.level]}</span>
-              <span>{formatDuration(course.totalDurationSeconds)} · {course.lessonCount} leçons</span>
+              <span>{formatDuration(course.totalDurationSeconds)} · {plural(course.lessonCount, 'leçon', 'leçons')}</span>
               <span>Mise à jour : {monthYear.format(course.updatedAt)}</span>
               <span>Français</span>
             </div>
