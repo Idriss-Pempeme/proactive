@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { AuthCard } from '@/components/auth/AuthCard';
 import { ResetPasswordForm } from '@/components/auth/forms';
-import { requireUser } from '@/lib/auth/session';
+import { getUser } from '@/lib/auth/session';
 
 export const metadata: Metadata = { title: 'Nouveau mot de passe | Proactive Académie', robots: { index: false } };
 
 async function ResetGate() {
-  await requireUser('/reset-password'); // the recovery link signs the user in via /auth/callback
+  if (!(await getUser())) redirect('/login?next=%2Freset-password'); // the recovery link signs the user in via /auth/callback
   return <ResetPasswordForm />;
 }
 

@@ -8,6 +8,7 @@ export const signUpSchema = z.object({
   displayName: z.string().trim().min(2, { error: 'Indiquez votre nom.' }).max(80, { error: '80 caractères maximum.' }),
   email,
   password,
+  next: z.string().optional(),
 });
 export const emailOnlySchema = z.object({ email, next: z.string().optional() });
 export const resetPasswordSchema = z

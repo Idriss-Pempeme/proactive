@@ -22,3 +22,10 @@ describe('auth schemas', () => {
     expect(resetPasswordSchema.safeParse({ password: '12345678', confirm: '12345678' }).success).toBe(true);
   });
 });
+
+describe('signup next', () => {
+  it('accepts an optional next', () => {
+    expect(signUpSchema.parse({ displayName: 'Awa', email: 'a@b.co', password: '12345678', next: '/learn/x' }).next).toBe('/learn/x');
+    expect(signUpSchema.safeParse({ displayName: 'Awa', email: 'a@b.co', password: '12345678' }).success).toBe(true);
+  });
+});

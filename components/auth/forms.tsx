@@ -17,10 +17,11 @@ function Field({ id, name, label, type = 'text', autoComplete, state }: {
   const inputId = id ?? name;
   const error = state.fieldErrors?.[name]?.[0];
   return (
-    <div className={styles.field}>
+    <div className={styles.field} key={JSON.stringify(state.values ?? null) + (error ?? '')}>
       <label className={styles.label} htmlFor={inputId}>{label}</label>
       <input
         id={inputId} name={name} type={type} autoComplete={autoComplete} required className={styles.input}
+        defaultValue={state.values?.[name]}
         aria-invalid={Boolean(error)} aria-describedby={error ? `${inputId}-error` : undefined}
       />
       {error && <span id={`${inputId}-error`} className={styles.fieldError}>{error}</span>}
@@ -80,6 +81,7 @@ export function SignupForm({ next }: { next: string }) {
   return (
     <>
       <form action={formAction} className={styles.form}>
+        <input type="hidden" name="next" value={next} />
         <Alert state={state} />
         <Field name="displayName" label="Nom complet" autoComplete="name" state={state} />
         <Field name="email" label="Email" type="email" autoComplete="email" state={state} />
