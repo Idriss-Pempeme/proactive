@@ -1,0 +1,28 @@
+.page { padding: 140px 0 80px; }
+.header { margin-bottom: 32px; }
+.header h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 8px; }
+.layout { display: grid; gap: 32px; }
+@media (min-width: 960px) { .layout { grid-template-columns: 260px 1fr; align-items: start; } }
+.filters { display: grid; gap: 20px; }
+@media (min-width: 960px) { .sticky { position: sticky; top: 110px; } }
+.filterGroup { display: grid; gap: 8px; }
+.filterLabel { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+.select, .search {
+  min-height: 44px; padding: 8px 12px; border-radius: 8px; width: 100%;
+  border: 1px solid var(--border-highlight); background: var(--bg-card); color: var(--text-main); font: inherit;
+}
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.count { color: var(--text-muted); margin: 0; }
+.empty { text-align: center; padding: 64px 16px; border: 1px dashed var(--border-highlight); border-radius: 12px; display: grid; gap: 12px; justify-items: center; }
+.pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; flex-wrap: wrap; }
+.pageLink {
+  min-width: 44px; min-height: 44px; display: grid; place-items: center; padding: 0 12px;
+  border-radius: 8px; border: 1px solid var(--border-subtle); color: var(--text-main);
+}
+.pageLink[aria-current='page'] { background: var(--cta-emerald-bg); color: var(--cta-emerald-fg); border-color: transparent; font-weight: 700; }
+.toggle summary { cursor: pointer; font-weight: 700; padding: 12px 0; }
+@media (min-width: 960px) { .toggle summary { display: none; } }
+.skeleton { min-height: 320px; border-radius: 12px; background: var(--bg-card); animation: pulse 1.4s ease-in-out infinite; }
+.skeletonGrid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+@keyframes pulse { 50% { opacity: 0.5; } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
