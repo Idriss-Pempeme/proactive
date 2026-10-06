@@ -49,8 +49,9 @@ test('protected areas redirect anonymous visitors', async ({ page }) => {
 test('login rejects open redirects', async ({ page }) => {
   test.skip(!process.env.E2E_EMAIL || !process.env.E2E_PASSWORD, 'set E2E_EMAIL / E2E_PASSWORD to run');
   await page.goto('/login?next=//evil.com');
-  await page.getByLabel('Email', { exact: true }).fill(process.env.E2E_EMAIL!);
-  await page.getByLabel('Mot de passe').fill(process.env.E2E_PASSWORD!);
+  // Field ids from components/auth/forms.tsx (the magic-link field is also labelled "Email").
+  await page.locator('#email').fill(process.env.E2E_EMAIL!);
+  await page.locator('#password').fill(process.env.E2E_PASSWORD!);
   await page.getByRole('button', { name: 'Se connecter' }).click();
   await expect(page).toHaveURL(/localhost:3000\/learn/);
   await expect(page.getByRole('heading', { name: /Bonjour/ })).toBeVisible();

@@ -148,8 +148,16 @@ certificates, instructor applications.
 ### RLS policies
 - profiles: anyone can read public columns via a `public_profiles` view
   (id, display_name, avatar_path, headline, bio only, and only for people with a
-  published course); owner can update own row
-  except `role`/`is_house` (enforced by trigger); admin full access.
+  published course); a signed-in user reads their own row (admin reads all) and
+  can update only `display_name`, `headline`, `bio` on it (column-level UPDATE
+  grant; `avatar_path` is set server-side after a validated upload). `role` and
+  `is_house` change only server-side as the DB owner (admin action, seed, SQL);
+  a trigger also rejects browser-role changes to them, as defence in depth.
+  CHECK constraints mirror the form limits: display name 2–80 characters,
+  headline ≤ 120, bio ≤ 2000.
+- New profiles take their display name from `display_name` metadata (email
+  signup), then `full_name` / `name` (Google), then the email local part, and
+  `Apprenant` if the result is under 2 characters.
 - categories: public read; admin write.
 - courses/sections/lessons: public read when course `status = 'published'`;
   owning instructor reads/writes own; admin full.
@@ -202,7 +210,10 @@ certificates, instructor applications.
   "Formations populaires" from DB (top 8 by enrollment). As built, the business
   stats (partners, countries, learners trained, satisfaction) stay as company
   claims; catalogue counts appear in the "Formations populaires" intro.
-- "Devenir formateur" CTA links to `/teach` (signed in) or signup.
+- "Devenir formateur" CTA links to `/signup?next=%2Fteach`: visitors sign up
+  and land on `/teach`; signed-in users are redirected straight to `/teach`.
+- Counts use French plurals (singular for 0 and 1); the count line is hidden
+  while the catalogue is empty.
 
 ### Currency display
 - Charge currency is always EUR. Display rule: `49 €` and, when the visitor's
@@ -232,9 +243,14 @@ certificates, instructor applications.
   jpg/png/webp).
 
 ## 6. Error handling
-- A single root `app/error.tsx` with branded fallback (all route groups share the
-  root layout, so one boundary covers them); `not-found.tsx` kept. Uses the
-  Next 16.3 `retry` prop.
+- Root `app/error.tsx` with a branded fallback covers every page below the root
+  layout (all route groups share it); it does **not** cover the root layout
+  itself. `app/global-error.tsx` (own `<html>`/`<body>`, global styles, same
+  French copy) covers root-layout failures. `not-found.tsx` kept. Both
+  boundaries use the Next 16.3 `retry` prop.
+- The root layout's auth slot (`AuthStatus`) catches profile/auth failures,
+  logs them and renders the guest links, so a DB or Supabase Auth outage never
+  takes down every page. Its Suspense fallback is a neutral placeholder.
 - Server actions return typed `{ ok: true, data } | { ok: false, error }`;
   forms display field errors from Zod.
 - External dependency failures (ECB rates, Storage image) degrade gracefully;
@@ -245,11 +261,23 @@ certificates, instructor applications.
   resolution, search-param parsing (Zod), requireRole.
 - Vitest + PGlite: catalog query (search, each filter, each sort, pagination),
   course-by-slug visibility rules, enrollment uniqueness, profile-creation
-  trigger. RLS policies are tested in PGlite with a stubbed `auth` schema and
-  `anon`/`authenticated` roles; there is no separate hosted RLS script.
-- Playwright smoke: home renders popular courses; catalog search + filter;
-  course page curriculum expands; signup → login → `/learn`; anonymous
-  `/admin` redirects to login.
+  trigger (display-name sources), profile column grants and CHECKs, seed
+  idempotency (house account never demoted). RLS policies and grants are tested
+  in PGlite with a stubbed `auth` schema, `anon`/`authenticated` roles and
+  Supabase's default privileges applied before the migrations.
+- Hosted RLS smoke: after migrations, `npm run db:rls-smoke`
+  (`scripts/rls-smoke.ts`) checks the real Supabase project with the
+  publishable key — as anon (no lesson bodies, no profile rows, public_profiles
+  readable) and as a throwaway password user created via the admin API (own
+  profile row only, no enrollment insert, no role change, bio update allowed);
+  the user is always deleted afterwards.
+- Playwright smoke (as built, `e2e/smoke.spec.ts`): home renders popular
+  courses and no invented ratings; catalog search, hostile query params and the
+  category filter; course page curriculum accordion and the anonymous
+  "Se connecter pour s’inscrire" CTA → `/login?next=`; unknown course → 404;
+  anonymous `/admin` → login; login rejects an open-redirect `next` (runs only
+  with `E2E_EMAIL` / `E2E_PASSWORD`). Signup is not automated (email
+  confirmation).
 - `npm run typecheck`, `lint`, `test`, `build` all green before a phase is done.
 
 ## 8. Out of scope for Phase 1
