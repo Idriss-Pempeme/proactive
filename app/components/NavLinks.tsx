@@ -8,23 +8,17 @@ const NAV_LINKS = [
   { href: '/about', label: 'À propos' },
   { href: '/courses', label: 'Formations' },
   { href: '/livres', label: 'Livres' },
-  { href: '#', label: 'Contact', hash: true },
+  { href: '/contact', label: 'Contact' },
 ];
 
 type Props = { variant: 'bar' | 'drawer'; onNavigate?: () => void };
 
 function Links({ variant, onNavigate, isActive }: Props & { isActive: (href: string) => boolean }) {
-  const items = NAV_LINKS.map((link) =>
-    link.hash ? (
-      <a key={link.href} href={link.href} onClick={onNavigate}>
-        {link.label}
-      </a>
-    ) : (
-      <Link key={link.href} href={link.href} className={isActive(link.href) ? 'active' : ''} onClick={onNavigate}>
-        {link.label}
-      </Link>
-    ),
-  );
+  const items = NAV_LINKS.map((link) => (
+    <Link key={link.href} href={link.href} className={isActive(link.href) ? 'active' : ''} onClick={onNavigate}>
+      {link.label}
+    </Link>
+  ));
   return <div className={variant === 'bar' ? 'nav-links' : 'nav-drawer-links'}>{items}</div>;
 }
 

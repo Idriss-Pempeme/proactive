@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { ExpertiseDomains } from '@/app/components/ExpertiseDomains';
 import Hero from '@/app/components/Hero';
 import { CourseGrid } from '@/components/catalog/CourseGrid';
 import { cachedPlatformStats, cachedPopularCourses } from '@/lib/catalog/cached';
@@ -68,6 +69,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <ExpertiseDomains />
 
       <section className="section">
         <div className="container">

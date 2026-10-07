@@ -127,7 +127,7 @@ export default function Hero() {
             </h1>
 
             <p className="home-hero-lead hero-rise" style={delay(0.38)}>
-              Formations certifiantes et accompagnement par des praticiens du terrain&nbsp;: sourcing,
+              Formations et accompagnement par des praticiens du terrain&nbsp;: sourcing,
               sécurisation des paiements, logistique et export.
             </p>
 

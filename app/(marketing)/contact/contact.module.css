@@ -1,0 +1,284 @@
+.page {
+  padding: calc(var(--nav-height) + clamp(48px, 7vw, 96px)) 0 clamp(80px, 10vw, 140px);
+  background: var(--bg-main);
+}
+
+/* ========== Header ========== */
+.header { margin-bottom: clamp(40px, 5vw, 72px); }
+.eyebrowLabel {
+  margin-bottom: 16px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-main);
+}
+.header h1 {
+  margin-bottom: 20px;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+.header h1 span { color: var(--gold-main); }
+.lead {
+  max-width: 58ch;
+  font-size: clamp(1.0625rem, 1.3vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+/* ========== Layout ========== */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+
+/* ========== Side column ========== */
+.details {
+  display: grid;
+  gap: 0;
+  margin: 0 0 clamp(40px, 5vw, 56px);
+}
+.details > div {
+  padding: 20px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.details > div:last-child { border-bottom: 1px solid var(--border-subtle); }
+.details dt {
+  margin-bottom: 6px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+.details dd {
+  margin: 0;
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+  line-height: 1.25;
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+.details a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border-highlight);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
+}
+
+.shortcuts h2 {
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+}
+.shortcuts ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  background: var(--bg-darker);
+  color: var(--text-main);
+  transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.shortcut > span {
+  display: grid;
+  gap: 2px;
+}
+.shortcut strong {
+  font-weight: 600;
+  color: var(--heading);
+}
+.shortcut > span > span {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.shortcut svg {
+  flex-shrink: 0;
+  color: var(--gold-main);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.shortcut:focus-visible {
+  outline: 2px solid var(--brand-orange);
+  outline-offset: 2px;
+}
+
+/* ========== Form panel ========== */
+.panel {
+  padding: clamp(24px, 3.5vw, 48px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 28px;
+  background: var(--bg-darker);
+  box-shadow: var(--card-shadow);
+}
+.panelTitle {
+  margin-bottom: 28px;
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+}
+
+.form {
+  display: grid;
+  gap: 22px;
+}
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.field {
+  display: grid;
+  gap: 8px;
+}
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.input {
+  height: 52px;
+  padding: 0 16px;
+}
+.textarea {
+  min-height: 160px;
+  padding: 14px 16px;
+  line-height: 1.6;
+  resize: vertical;
+}
+.textarea::placeholder { color: var(--text-muted); opacity: 0.8; }
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: none;
+  border-color: var(--brand-orange);
+  background: var(--bg-darker);
+  box-shadow: 0 0 0 4px rgba(247, 148, 29, 0.18);
+}
+
+/* Subject chips: real radio buttons, styled. */
+.subjects {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.subjects legend { margin-bottom: 10px; padding: 0; }
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip { position: relative; cursor: pointer; }
+.chip input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  background: var(--bg-main);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-main);
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.chip input:checked + span {
+  border-color: var(--heading);
+  background: var(--heading);
+  color: #f6f3ee;
+}
+.chip input:focus-visible + span {
+  outline: 2px solid var(--brand-orange);
+  outline-offset: 2px;
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 58px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 100px;
+  background: var(--brand-orange);
+  color: var(--on-brand);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 16px 34px -14px rgba(247, 148, 29, 0.7);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.submit svg { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.submit:focus-visible {
+  outline: 2px solid var(--heading);
+  outline-offset: 3px;
+}
+
+.note {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.note a {
+  color: var(--gold-main);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .details a:hover {
+    color: var(--gold-main);
+    text-decoration-color: currentColor;
+  }
+  .shortcut:hover {
+    border-color: var(--heading);
+    transform: translateY(-2px);
+  }
+  .shortcut:hover svg { transform: translate(3px, -3px); }
+  .chip:hover span { border-color: var(--heading); }
+  .submit:hover {
+    background: #fba63f;
+    box-shadow: 0 20px 40px -14px rgba(247, 148, 29, 0.85);
+  }
+  .submit:hover svg { transform: translateX(4px); }
+}
+
+@media (max-width: 960px) {
+  .grid { grid-template-columns: 1fr; }
+  /* On one column the form comes first: it is what most visitors came for. */
+  .panel { order: -1; }
+}
+
+@media (max-width: 560px) {
+  .row { grid-template-columns: 1fr; }
+  .panel { border-radius: 22px; }
+}
