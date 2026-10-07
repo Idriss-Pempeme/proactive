@@ -1,20 +1,12 @@
 const FALLBACK_THUMBNAIL = '/academy-training.jpg';
 
-/** Returns null when the path is unsafe or Supabase is not configured. */
-function storagePublicUrl(bucket: string, path: string): string | null {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, '');
-  if (!base) return null;
-  const segments = path.split('/');
-  if (segments.some((s) => s === '' || s === '.' || s === '..')) return null;
-  return `${base}/storage/v1/object/public/${bucket}/${segments.map(encodeURIComponent).join('/')}`;
-}
-
+/** Course thumbnails are files in /public; anything else falls back to the default image. */
 export function thumbnailUrl(path: string | null): string {
-  if (!path) return FALLBACK_THUMBNAIL;
-  if (path.startsWith('/')) return path.startsWith('//') ? FALLBACK_THUMBNAIL : path;
-  return storagePublicUrl('course-media', path) ?? FALLBACK_THUMBNAIL;
+  if (!path || !path.startsWith('/') || path.startsWith('//')) return FALLBACK_THUMBNAIL;
+  return path;
 }
 
+/** No uploaded avatars in the UI-only build: components show initials instead. */
 export function avatarUrl(path: string | null): string | null {
-  return path ? storagePublicUrl('avatars', path) : null;
+  return path && path.startsWith('/') && !path.startsWith('//') ? path : null;
 }

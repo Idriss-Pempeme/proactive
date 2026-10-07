@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Level } from '@/lib/db/schema';
+import type { Level } from '@/lib/data/types';
 
 export const SORTS = ['popular', 'rating', 'newest', 'price_asc', 'price_desc'] as const;
 export type Sort = (typeof SORTS)[number];

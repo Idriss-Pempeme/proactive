@@ -43,7 +43,7 @@ export default function NotFound() {
       <div style={{ position: 'relative', zIndex: 1 }}>
         <h1 style={{ 
           fontSize: 'clamp(8rem, 15vw, 12rem)', 
-          fontFamily: "'Playfair Display', serif", 
+          fontFamily: 'var(--font-display), serif',
           fontWeight: '800', 
           color: 'var(--heading)',
           lineHeight: '1',
@@ -54,7 +54,7 @@ export default function NotFound() {
         
         <h2 style={{ 
           fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: 'var(--font-display), serif',
           color: 'var(--heading)', 
           marginBottom: '20px' 
         }}>

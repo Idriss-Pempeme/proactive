@@ -18,7 +18,7 @@ test('catalog search, filter and hostile input', async ({ page }) => {
   await page.goto('/courses?q=%22%26%7C!&page=abc&sort=drop');
   await expect(page.getByText(/formation/).first()).toBeVisible();
   await page.goto('/courses');
-  await page.getByLabel('Catégorie').selectOption('finance');
+  await page.getByRole('navigation', { name: 'Domaines' }).getByRole('link', { name: 'Finance' }).click();
   await expect(page).toHaveURL(/category=finance/);
   await expect(page.getByRole('heading', { name: /Sécurisation des Paiements/ })).toBeVisible();
   await noHorizontalScroll(page);
@@ -41,18 +41,18 @@ test('unknown course is a 404', async ({ page }) => {
   await expect(page.getByText(/introuvable|404/i).first()).toBeVisible();
 });
 
-test('protected areas redirect anonymous visitors', async ({ page }) => {
-  await page.goto('/admin');
-  await expect(page).toHaveURL(/\/login\?next=%2Fadmin/);
+test('account pages render as static UI', async ({ page }) => {
+  for (const path of ['/login', '/signup', '/learn', '/teach', '/account', '/admin']) {
+    await page.goto(path);
+    await expect(page.locator('h1').first()).toBeVisible();
+    await noHorizontalScroll(page);
+  }
 });
 
-test('login rejects open redirects', async ({ page }) => {
-  test.skip(!process.env.E2E_EMAIL || !process.env.E2E_PASSWORD, 'set E2E_EMAIL / E2E_PASSWORD to run');
-  await page.goto('/login?next=//evil.com');
-  // Field ids from components/auth/forms.tsx (the magic-link field is also labelled "Email").
-  await page.locator('#email').fill(process.env.E2E_EMAIL!);
-  await page.locator('#password').fill(process.env.E2E_PASSWORD!);
+test('login form validates and explains the demo', async ({ page }) => {
+  await page.goto('/login');
+  await page.locator('#email').fill('apprenant@example.com');
+  await page.locator('#password').fill('motdepasse');
   await page.getByRole('button', { name: 'Se connecter' }).click();
-  await expect(page).toHaveURL(/localhost:3000\/learn/);
-  await expect(page.getByRole('heading', { name: /Bonjour/ })).toBeVisible();
+  await expect(page.getByText(/Version de démonstration/)).toBeVisible();
 });

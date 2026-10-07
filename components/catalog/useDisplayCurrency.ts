@@ -3,20 +3,17 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { CURRENCY_COOKIE, readCurrencyCookie } from '@/lib/money/cookie';
 import type { DisplayCurrency } from '@/lib/money/currencies';
-import { coerceRates, type Rates } from '@/lib/money/rates';
+import { FIXED_RATES, fetchLiveRates, type Rates } from '@/lib/money/rates';
 
 const EVENT = 'display-currency-change';
 let ratesPromise: Promise<Rates> | null = null;
 
 function loadRates(): Promise<Rates> {
-  ratesPromise ??= fetch('/api/rates')
-    .then((r) => (r.ok ? r.json() : null))
-    .then(coerceRates)
-    .catch((): Rates => ({}))
-    .then((rates) => {
-      if (Object.keys(rates).length === 0) ratesPromise = null;
-      return rates;
-    });
+  // Straight from the public rates API (it allows browser requests); fixed CFA parities if it fails.
+  ratesPromise ??= fetchLiveRates().catch((): Rates => {
+    ratesPromise = null;
+    return FIXED_RATES;
+  });
   return ratesPromise;
 }
 

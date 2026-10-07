@@ -1,8 +1,4 @@
 import Link from 'next/link';
-import { unstable_rethrow } from 'next/navigation';
-import { getProfile } from '@/lib/auth/session';
-import { avatarUrl } from '@/lib/media';
-import { UserMenu } from './UserMenu';
 
 export function GuestLinks({ variant }: { variant: 'bar' | 'drawer' }) {
   if (variant === 'drawer') {
@@ -26,16 +22,7 @@ export function AuthPlaceholder() {
   return <span aria-hidden="true" style={{ display: 'inline-block', minWidth: 160 }} />;
 }
 
-export async function AuthStatus({ variant }: { variant: 'bar' | 'drawer' }) {
-  let profile: Awaited<ReturnType<typeof getProfile>>;
-  try {
-    profile = await getProfile();
-  } catch (error) {
-    unstable_rethrow(error); // let Next's own control-flow errors (prerender bail-outs etc.) through
-    // Rendered by the root layout on every page: a DB or auth outage must not take the whole site down.
-    console.error('AuthStatus: could not load the profile', error);
-    return <GuestLinks variant={variant} />;
-  }
-  if (!profile) return <GuestLinks variant={variant} />;
-  return <UserMenu variant={variant} name={profile.displayName} role={profile.role} avatar={avatarUrl(profile.avatarPath)} />;
+/** UI-only build: visitors are always signed out. */
+export function AuthStatus({ variant }: { variant: 'bar' | 'drawer' }) {
+  return <GuestLinks variant={variant} />;
 }

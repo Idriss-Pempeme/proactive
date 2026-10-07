@@ -1,4 +1,4 @@
-import type { Level } from '@/lib/db/schema';
+import type { Level } from '@/lib/data/types';
 
 export const LEVEL_LABELS: Record<Level, string> = {
   beginner: 'Débutant',

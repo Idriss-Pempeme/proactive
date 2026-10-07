@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import HeroSlider from '@/app/components/HeroSlider';
+import Hero from '@/app/components/Hero';
 import { CourseGrid } from '@/components/catalog/CourseGrid';
 import { cachedPlatformStats, cachedPopularCourses } from '@/lib/catalog/cached';
 import { plural } from '@/lib/plural';
@@ -43,7 +43,7 @@ export default async function HomePage() {
   return (
     <>
       <HomeEffects />
-      <HeroSlider />
+      <Hero />
 
       {/* ========== COURSE CATALOGUE ========== */}
       <section id="formations" className="section course-section">
@@ -149,32 +149,6 @@ export default async function HomePage() {
               </div>
               <h3>Transmission</h3>
               <p>Formation d&apos;une nouvelle génération de négociants africains via notre Académie d&apos;excellence.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* ========== STATS ========== */}
-      <section className="section">
-        <div className="container">
-          <div className="stats-premium stagger-children">
-            <div>
-              <div className="stat-number counter-value" data-target="150" data-suffix="+">0</div>
-              <div className="stat-label">Partenaires Mondiaux</div>
-            </div>
-            <div>
-              <div className="stat-number counter-value" data-target="25" data-suffix="">0</div>
-              <div className="stat-label">Pays d&apos;Opération</div>
-            </div>
-            <div>
-              <div className="stat-number counter-value" data-target="500" data-suffix="+">0</div>
-              <div className="stat-label">Apprenants Formés</div>
-            </div>
-            <div>
-              <div className="stat-number counter-value" data-target="98" data-suffix="%">0</div>
-              <div className="stat-label">Taux de Satisfaction</div>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import type { CourseCardData } from '@/lib/db/queries/catalog';
+import type { CourseCardData } from '@/lib/data/types';
 import { CourseCard } from './CourseCard';
 import styles from './CourseCard.module.css';
 

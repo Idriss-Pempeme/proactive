@@ -1,4 +1,4 @@
-import type { CourseDetail } from '@/lib/db/queries/catalog';
+import type { CourseDetail } from '@/lib/data/types';
 import { formatDuration } from '@/lib/duration';
 import { plural } from '@/lib/plural';
 

@@ -46,7 +46,7 @@ export function useCounterAnimation() {
 
     function animateCounter(el: HTMLElement) {
       const target = parseInt(el.getAttribute('data-target') ?? '0', 10);
-      const suffix = el.getAttribute('data-suffix') || '+';
+      const suffix = el.getAttribute('data-suffix') ?? '+';
       const duration = 2000;
       const startTime = performance.now();
 

@@ -1,0 +1,357 @@
+/* Livres: each book gets its own row, staged on a tinted panel in its jacket's
+   colour, with the facts and the order button beside it. */
+
+.intro {
+  padding: calc(var(--nav-height) + clamp(56px, 8vw, 112px)) 0 clamp(48px, 6vw, 80px);
+  background: var(--bg-main);
+}
+.introTitle {
+  max-width: 16ch;
+  margin-bottom: 24px;
+  font-size: clamp(2.5rem, 5.2vw, 4.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.introTitle span {
+  color: var(--gold-main);
+}
+.introLead {
+  max-width: 52ch;
+  font-size: clamp(1.0625rem, 1.3vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.bookRow {
+  padding: clamp(32px, 5vw, 64px) 0;
+  background: var(--bg-main);
+}
+.bookRow:last-of-type {
+  padding-bottom: clamp(80px, 10vw, 140px);
+}
+.bookGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(40px, 7vw, 112px);
+  align-items: center;
+}
+.flip .stage {
+  order: 2;
+}
+
+/* Stage: a tinted panel in the jacket's family. */
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(440px, 46vw, 640px);
+  border-radius: 32px;
+  overflow: hidden;
+}
+.ember {
+  background: radial-gradient(120% 90% at 30% 20%, #fdecd9 0%, #f8d6b4 60%, #f2c39a 100%);
+}
+.forest {
+  background: radial-gradient(120% 90% at 30% 20%, #e4f3e7 0%, #c9e6cf 60%, #b2d9ba 100%);
+}
+
+.bookScene {
+  position: relative;
+  padding: 40px;
+  perspective: 1600px;
+}
+.book {
+  --ry: -22deg;
+  --rx: 0deg;
+  position: relative;
+  width: clamp(210px, 21vw, 290px);
+  aspect-ratio: 2 / 3;
+  transform-style: preserve-3d;
+  transform: rotateY(var(--ry)) rotateX(var(--rx));
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bookScene:hover .book {
+  transition-duration: 0.25s;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 22px 24px 30px;
+  border-radius: 3px 10px 10px 3px;
+  color: #fff;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 30px 60px -20px rgba(30, 14, 4, 0.55);
+}
+.cover::before {
+  /* Spine hinge: shadowed fold and a highlight just past it. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(255, 255, 255, 0.16) 3.5%, rgba(255, 255, 255, 0) 8%, rgba(0, 0, 0, 0) 92%, rgba(0, 0, 0, 0.18) 100%);
+  pointer-events: none;
+}
+.cover_ember .cover {
+  background: linear-gradient(155deg, #e8671c 0%, #c4500f 45%, #8a3306 100%);
+}
+.cover_forest .cover {
+  background: linear-gradient(155deg, #1d8a3f 0%, #116a2f 45%, #063a1a 100%);
+}
+
+.coverGenre {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+.coverTitle {
+  margin-top: 22px;
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.375rem, 1.8vw, 1.75rem);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.coverRule {
+  width: 40px;
+  height: 2px;
+  margin: 18px 0 14px;
+  background: #f7941d;
+}
+.cover_ember .coverRule {
+  background: #fde6c8;
+}
+.coverSub {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.9);
+}
+.coverAuthor {
+  margin-top: auto;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Page block, folded back along the fore-edge. */
+.pages {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: calc(100% - 2px);
+  width: 30px;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+  background: repeating-linear-gradient(to right, #f6f1e7 0 2px, #e2dacb 2px 3px);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.12);
+}
+
+.bookShadow {
+  position: absolute;
+  left: 18%;
+  right: 12%;
+  bottom: 22px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(40, 20, 6, 0.3);
+  filter: blur(14px);
+  z-index: -1;
+}
+
+/* Copy */
+.genre {
+  margin-bottom: 16px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-main);
+}
+.forest + .bookCopy .genre {
+  color: var(--emerald-main);
+}
+.bookTitle {
+  margin-bottom: 10px;
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.bookSubtitle {
+  margin-bottom: 24px;
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  color: var(--text-muted);
+}
+.bookDesc {
+  max-width: 54ch;
+  margin-bottom: 32px;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 32px;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.specs > div {
+  padding: 16px 0;
+}
+.specs > div + div {
+  padding-left: 20px;
+  border-left: 1px solid var(--border-subtle);
+}
+.specs dt {
+  margin-bottom: 4px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+.specs dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+}
+.price {
+  font-family: var(--font-display), serif;
+  font-size: clamp(2.25rem, 3vw, 2.75rem);
+  line-height: 1;
+  color: var(--heading);
+}
+.buyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 54px;
+  padding: 0 28px;
+  border-radius: 100px;
+  background: var(--brand-orange);
+  color: var(--on-brand);
+  font-weight: 600;
+  box-shadow: 0 16px 34px -14px rgba(247, 148, 29, 0.7);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.buyBtn svg {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.buyBtn:focus-visible,
+.authorLink:focus-visible {
+  outline: 2px solid var(--brand-orange);
+  outline-offset: 3px;
+}
+.buyNote {
+  margin-top: 14px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Author */
+.author {
+  padding: clamp(48px, 6vw, 72px) 0;
+  background: var(--bg-darker);
+  border-top: 1px solid var(--border-subtle);
+}
+.authorInner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+}
+.authorPhoto {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--surface-media);
+}
+.authorName {
+  margin-bottom: 4px;
+  font-family: var(--font-display), serif;
+  font-size: 1.5rem;
+  color: var(--heading);
+}
+.authorBio {
+  max-width: 56ch;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.authorLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--gold-main);
+  white-space: nowrap;
+}
+.authorLink svg {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .buyBtn:hover {
+    background: #fba63f;
+    box-shadow: 0 20px 40px -14px rgba(247, 148, 29, 0.85);
+  }
+  .buyBtn:hover svg,
+  .authorLink:hover svg {
+    transform: translateX(4px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .bookGrid {
+    grid-template-columns: 1fr;
+  }
+  .flip .stage {
+    order: 0;
+  }
+  .stage {
+    min-height: clamp(380px, 70vw, 520px);
+  }
+}
+
+@media (max-width: 640px) {
+  .specs {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .specs > div + div {
+    padding-left: 12px;
+  }
+  .buy {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .buyBtn {
+    justify-content: center;
+  }
+  .authorInner {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .authorLink {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book {
+    transition: none;
+  }
+}

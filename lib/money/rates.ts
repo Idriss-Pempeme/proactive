@@ -36,7 +36,7 @@ export async function fetchLiveRates(fetchImpl: typeof fetch = fetch): Promise<R
   }
 }
 
-/** Validate rates received from our own /api/rates endpoint (already EUR-based). */
+/** Validate an already EUR-based rates object (e.g. from a cache or another endpoint). */
 export function coerceRates(json: unknown): Rates {
   const out: Rates = {};
   if (typeof json !== 'object' || json === null) return out;

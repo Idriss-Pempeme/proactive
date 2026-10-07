@@ -12,7 +12,7 @@ export default async function Footer() {
         <div className="footer-grid">
           <div>
             <Link href="/" className="nav-logo" style={{ marginBottom: '24px' }}>
-              <span className="brand-title">PROACTIVE</span>
+              <span className="brand-title"><span className="brand-pro">PRO</span><span className="brand-active">ACTIVE</span></span>
               <span className="brand-subtitle">Services</span>
             </Link>
             <p className="text-muted" style={{ maxWidth: '400px', lineHeight: '1.8' }}>

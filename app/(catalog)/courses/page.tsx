@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 
 function CatalogSkeleton() {
   return (
-    <div className={styles.layout} aria-busy="true">
-      <div className={styles.skeleton} />
+    <div aria-busy="true">
+      <div className={styles.skeletonBar} />
       <div className={styles.skeletonGrid}>
-        {Array.from({ length: 6 }, (_, i) => <div key={i} className={styles.skeleton} />)}
+        {Array.from({ length: 8 }, (_, i) => <div key={i} className={styles.skeleton} />)}
       </div>
     </div>
   );
@@ -28,30 +28,20 @@ async function Catalog({ searchParams }: { searchParams: PageProps<'/courses'>['
   const query = parseCatalogParams(await searchParams);
   const [{ items, total }, categories] = await Promise.all([cachedSearchCourses(query), cachedCategories()]);
   return (
-    <div className={styles.layout}>
-      <aside aria-label="Filtres">
-        {/* key resets the uncontrolled inputs when the URL changes */}
-        <CatalogFilters key={JSON.stringify(query)} query={query} categories={categories} />
-      </aside>
-      <div>
-        <div className={styles.toolbar}>
-          <p className={styles.count} aria-live="polite">
-            {total} formation{total > 1 ? 's' : ''}
-            {query.q ? ` pour « ${query.q} »` : ''}
-          </p>
+    <>
+      {/* key resets the uncontrolled inputs when the URL changes */}
+      <CatalogFilters key={JSON.stringify(query)} query={query} categories={categories} total={total} />
+      {items.length ? (
+        <CourseGrid courses={items} />
+      ) : (
+        <div className={styles.empty}>
+          <h2>Aucune formation ne correspond</h2>
+          <p>Essayez d’autres mots-clés ou retirez des filtres.</p>
+          <Link href="/courses" className={styles.emptyLink}>Voir toutes les formations</Link>
         </div>
-        {items.length ? (
-          <CourseGrid courses={items} />
-        ) : (
-          <div className={styles.empty}>
-            <h2 style={{ margin: 0 }}>Aucune formation ne correspond</h2>
-            <p className="text-muted" style={{ margin: 0 }}>Essayez d’autres mots-clés ou retirez des filtres.</p>
-            <Link href="/courses" className="btn btn-secondary">Voir toutes les formations</Link>
-          </div>
-        )}
-        <Pagination query={query} total={total} />
-      </div>
-    </div>
+      )}
+      <Pagination query={query} total={total} />
+    </>
   );
 }
 
@@ -60,10 +50,11 @@ export default function CoursesPage({ searchParams }: PageProps<'/courses'>) {
     <section className={styles.page}>
       <div className="container">
         <header className={styles.header}>
+          <p className={styles.label}>Formations</p>
           <h1>
-            Catalogue des <span style={{ color: 'var(--gold-main)' }}>formations</span>
+            Catalogue des <span>formations.</span>
           </h1>
-          <p className="text-lead">Négoce, import-export, logistique, finance : apprenez auprès de praticiens.</p>
+          <p className={styles.lead}>Négoce, import-export, logistique, finance : apprenez auprès de praticiens du terrain.</p>
         </header>
         <Suspense fallback={<CatalogSkeleton />}>
           <Catalog searchParams={searchParams} />

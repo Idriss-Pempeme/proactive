@@ -1,4 +1,4 @@
-import type { Level } from "./schema";
+import type { Level } from "./types";
 
 export const SEED_CATEGORIES = [
   { slug: "negoce", name: "Négoce" },

@@ -1,26 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense, type ReactNode } from 'react';
+import { useState, useEffect, Suspense, type ReactNode } from 'react';
 import Link from 'next/link';
 import { CloseOnRouteChange } from './CloseOnRouteChange';
 import { NavLinks, StaticNavLinks } from './NavLinks';
-
-function SunIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-    </svg>
-  );
-}
-
-function MoonIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-    </svg>
-  );
-}
 
 function MenuIcon() {
   return (
@@ -40,30 +23,7 @@ function CloseIcon() {
 
 export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNode; drawerAuthSlot: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // The inline script in the root layout already resolved the theme before
-  // paint, so the DOM attribute is the source of truth, not localStorage.
-  useEffect(() => {
-    // Intentional: hydration-safe sync from the DOM attribute set by the inline script.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-    const applied = document.documentElement.getAttribute('data-theme');
-    if (applied === 'light' || applied === 'dark') setTheme(applied);
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((current) => {
-      const next = current === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      try {
-        window.localStorage.setItem('theme', next);
-      } catch {}
-      return next;
-    });
-  }, []);
 
   useEffect(() => {
     function handleScroll() {
@@ -105,7 +65,7 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="container nav-inner">
           <Link href="/" className="nav-logo">
-            <span className="brand-title">PROACTIVE</span>
+            <span className="brand-title"><span className="brand-pro">PRO</span><span className="brand-active">ACTIVE</span></span>
             <span className="brand-subtitle">Services</span>
           </Link>
 
@@ -116,16 +76,6 @@ export default function Navbar({ authSlot, drawerAuthSlot }: { authSlot: ReactNo
           <div className="nav-actions">
             {authSlot}
 
-            {mounted && (
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="icon-btn"
-                aria-label={theme === 'light' ? 'Activer le mode sombre' : 'Activer le mode clair'}
-              >
-                {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-              </button>
-            )}
             <button
               type="button"
               className="icon-btn nav-burger"

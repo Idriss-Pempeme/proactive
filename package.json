@@ -9,37 +9,24 @@
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:e2e": "playwright test",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:storage": "tsx --env-file=.env.local scripts/apply-sql.ts supabase/storage.sql",
-    "db:seed": "tsx --env-file=.env.local scripts/seed.ts",
-    "db:rls-smoke": "tsx --env-file=.env.local scripts/rls-smoke.ts"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.117.2",
-    "drizzle-orm": "^0.45.3",
     "marked": "^18.1.0",
     "next": "16.3.6",
-    "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sanitize-html": "^2.18.0",
-    "server-only": "^0.0.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.8",
     "@playwright/test": "^1.63.0",
     "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/sanitize-html": "^2.16.2",
-    "drizzle-kit": "^0.31.11",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.6",
-    "tsx": "^4.23.15",
     "typescript": "5.9.3",
     "vitest": "^5.0.3"
   }
