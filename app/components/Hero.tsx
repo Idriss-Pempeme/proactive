@@ -15,8 +15,6 @@ const CLIPS = [
   '/video_2026-09-29_14-16-39.mp4',
 ];
 
-const COMMODITIES = ['du cacao.', 'du cajou.', 'du karité.', 'du sésame.'];
-
 const STATS = [
   { value: 150, suffix: '+', label: 'Partenaires mondiaux' },
   { value: 25, suffix: '', label: "Pays d'opération" },
@@ -51,7 +49,6 @@ export default function Hero() {
   const motionOk = useSyncExternalStore(subscribeMotion, motionAllowed, () => false);
   const [clip, setClip] = useState(0);
   const [playing, setPlaying] = useState(true);
-  const [word, setWord] = useState(0);
   const [filmOpen, setFilmOpen] = useState(false);
   const clipRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const fillRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -72,12 +69,6 @@ export default function Hero() {
       else v.pause();
     });
   }, [clip, animate]);
-
-  useEffect(() => {
-    if (!animate) return;
-    const id = setInterval(() => setWord((w) => (w + 1) % COMMODITIES.length), 2800);
-    return () => clearInterval(id);
-  }, [animate]);
 
   useEffect(() => {
     const d = dialogRef.current;
@@ -125,34 +116,12 @@ export default function Hero() {
               </span>{' '}
               <span className="hero-line">
                 <span className="hero-line-in" style={delay(0.08)}>
-                  international
+                  international <span className="hero-accent">des</span>
                 </span>
               </span>{' '}
               <span className="hero-line">
                 <span className="hero-line-in hero-accent" style={delay(0.16)}>
-                  {motionOk ? (
-                    <>
-                      <span className="sr-only">des matières premières africaines</span>
-                      <span className="hero-rotator" aria-hidden="true">
-                        {COMMODITIES.map((w, i) => (
-                          <span
-                            key={w}
-                            className={
-                              i === word
-                                ? 'is-current'
-                                : i === (word - 1 + COMMODITIES.length) % COMMODITIES.length
-                                  ? 'is-leaving'
-                                  : undefined
-                            }
-                          >
-                            {w}
-                          </span>
-                        ))}
-                      </span>
-                    </>
-                  ) : (
-                    'des matières premières.'
-                  )}
+                  matières premières.
                 </span>
               </span>
             </h1>
