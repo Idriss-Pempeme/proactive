@@ -48,6 +48,40 @@ const SHIFTS = [
   ["L'Afrique", 'le monde'],
 ];
 
+const FOUNDER_TITLES = [
+  'Entrepreneure',
+  'Investisseuse',
+  'Conférencière internationale',
+  'Formatrice',
+  'Experte en négoce international',
+];
+
+const FOUNDER_CAREER = [
+  'Promotrice d’une clinique au Cameroun',
+  'Promotrice d’un centre de formation au Cameroun',
+  'Associée dans une usine de fabrication de couches pour bébés au Burkina Faso',
+  'Entrepreneure et investisseuse dans plusieurs secteurs d’activité',
+  'Experte et formatrice en négoce des matières premières africaines',
+  'Conférencière internationale : conférences et formations dans plusieurs pays africains et en Belgique',
+];
+
+const FOUNDER_COUNTRIES = ['Burkina Faso', 'Côte d’Ivoire', 'Bénin', 'Togo', 'Tanzanie', 'Guinée-Conakry', 'Cameroun'];
+
+const FOUNDER_EVENTS: [string, string][] = [
+  ['Sommet EUROPAFRIQUE', 'Parlement européen, Bruxelles'],
+  ['Salon International de l’Alimentation', 'Paris'],
+  ['BIOFACH', 'Allemagne'],
+  ['Foire internationale de la cosmétique', 'Istanbul, Turquie'],
+];
+
+function Arrow() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12H19M19 12L13 6M19 12L13 18" />
+    </svg>
+  );
+}
+
 export default async function AboutPage() {
   const [stats, categories] = await Promise.all([cachedPlatformStats(), cachedCategories()]);
 
@@ -190,33 +224,98 @@ export default async function AboutPage() {
       {/* ========== FOUNDER ========== */}
       <section className={styles.founder}>
         <div className={`container ${styles.founderGrid}`}>
-          <div className={`${styles.founderPhoto} fade-up`}>
-            <Image
-              src="/founder-portrait.jpg"
-              alt="Josette Kameni, fondatrice de Proactive Services"
-              fill
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
-            />
+          <div className={styles.founderAside}>
+            <div className={`${styles.founderPhoto} fade-up`}>
+              <Image
+                src="/founder-portrait.jpg"
+                alt="Josette Kameni, fondatrice de Proactive Services"
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
+              />
+            </div>
+            <div className={`${styles.founderYears} fade-up`}>
+              <span>40+</span>
+              <p>années d’expérience entrepreneuriale entre l’Afrique et l’international</p>
+            </div>
           </div>
-          <div className={`${styles.founderCopy} fade-up`}>
-            <p className={styles.founderRole}>La fondatrice</p>
-            <h2>Josette Kameni, « la Reine du Négoce ».</h2>
-            <p>
-              Forte de <strong>40 ans d&apos;expérience</strong> dans l&apos;entrepreneuriat (santé, éducation,
-              restauration), Josette Kameni arpente le monde pour maîtriser les rouages du commerce international :
-              de l&apos;Afrique, pourvoyeur infini de matières premières, aux marchés d&apos;Asie et d&apos;Occident.
-            </p>
-            <blockquote className={styles.founderQuote}>
-              Ce ne sont pas les obstacles qui la définissent, mais son courage inébranlable à élever l&apos;Afrique
-              sur l&apos;échiquier mondial.
-            </blockquote>
-            <Link href="/livres" className={styles.textLink}>
-              Découvrir ses ouvrages
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 12H19M19 12L13 6M19 12L13 18" />
-              </svg>
-            </Link>
+
+          <div className={styles.founderCopy}>
+            <div className="fade-up">
+              <p className={styles.founderRole}>La fondatrice</p>
+              <h2>Josette Kameni</h2>
+              <ul className={styles.founderTitles}>
+                {FOUNDER_TITLES.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+              <p className={styles.founderLead}>
+                Plus de <strong>40 années d’expérience entrepreneuriale</strong> au service du développement des
+                affaires entre l’Afrique et l’international.
+              </p>
+            </div>
+
+            <div className={`${styles.founderBlock} fade-up`}>
+              <h3>Son parcours entrepreneurial</h3>
+              <ul className={styles.founderCareer}>
+                {FOUNDER_CAREER.map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={`${styles.founderBlock} fade-up`}>
+              <h3>Une femme de terrain</h3>
+              <p className={styles.founderNote}>Des missions professionnelles dans sept pays africains :</p>
+              <ul className={styles.founderCountries}>
+                {FOUNDER_COUNTRIES.map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={`${styles.founderBlock} fade-up`}>
+              <h3>Une expérience internationale</h3>
+              <ul className={styles.founderEvents}>
+                {FOUNDER_EVENTS.map(([name, place]) => (
+                  <li key={name}>
+                    <strong>{name}</strong>
+                    <span>{place}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={`${styles.founderBlock} fade-up`}>
+              <h3>40 années d’expérience transmises à travers ses livres</h3>
+              <ul className={styles.founderBooks}>
+                <li>
+                  <Link href="/livres">
+                    <span>Réussir en entrepreneuriat</span>
+                    <Arrow />
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/livres">
+                    <span>La victoire d’une femme brisée</span>
+                    <Arrow />
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className={`${styles.founderMission} fade-up`}>
+              <p className={styles.founderMotto}>
+                Entreprendre. <span>Investir.</span> Transmettre. <span>Connecter.</span>
+              </p>
+              <blockquote>
+                <p>
+                  « L’Afrique ne doit plus seulement exporter ses matières premières. Elle doit créer de la valeur,
+                  transformer et conquérir les marchés internationaux. »
+                </p>
+                <footer>Sa conviction</footer>
+              </blockquote>
+            </div>
           </div>
         </div>
       </section>
