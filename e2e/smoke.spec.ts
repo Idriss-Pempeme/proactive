@@ -29,7 +29,7 @@ test('course page shows curriculum and asks anonymous users to log in', async ({
   await expect(page.getByRole('heading', { level: 1, name: /Fondements du Négoce/ })).toBeVisible();
   await expect(page.getByText('Bienvenue et objectifs de la formation')).toBeVisible();
   await page.getByText('Construire et négocier une offre').click();
-  await expect(page.getByText('Négocier avec un acheteur étranger')).toBeVisible();
+  await expect(page.getByText('Négocier avec un acheteur étranger', { exact: true })).toBeVisible();
   await page.getByRole('link', { name: /Se connecter pour s’inscrire/ }).click();
   await expect(page).toHaveURL(/\/login\?next=%2Fcourses%2Ffondements-negoce-international/);
   await noHorizontalScroll(page);
