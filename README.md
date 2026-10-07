@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Proactive Académie (UI)
 
-## Getting Started
+The front end of Proactive Académie, the learning platform of Proactive Services: home page, about page,
+course catalogue and course pages, instructor page, books page, and the account screens.
 
-First, run the development server:
+This repository is **UI only**. There is no database, authentication or server logic:
+
+- The catalogue (8 demo courses across 10 domains) is served from static content in `lib/data/`.
+- Login, signup, account, learning, teaching and admin pages render and validate their forms, then show a
+  "version de démonstration" message instead of saving anything.
+- Prices can be shown in other currencies; exchange rates are fetched in the browser from a public API,
+  with the fixed CFA franc parities as a fallback.
+
+Built with Next.js 16, React 19 and TypeScript.
+
+## Getting started
+
+Requires Node.js 20.9 or newer.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000. No environment variables are required; `.env.example` lists the optional ones.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` / `npm start` | Production build and server |
+| `npm run typecheck` | Type-check the project |
+| `npm run lint` | Lint |
+| `npm test` | Unit tests (Vitest) |
+| `npm run test:e2e` | Browser smoke tests (Playwright; needs `npm run build` first) |
 
-## Learn More
+## Where things live
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/` – pages and layout (App Router). `app/globals.css` holds the design tokens and shared styles.
+- `components/` – catalogue and auth components.
+- `lib/data/` – the static demo catalogue and its types.
+- `lib/catalog/`, `lib/money/`, `lib/auth/schemas.ts` – catalogue URL handling, price formatting and form validation.
+- `public/` – images and videos.

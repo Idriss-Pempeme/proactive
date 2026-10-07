@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/playwright-report
+/test-results
+
+# backend and database code: kept locally, never committed (this repo is UI only)
+/backend/
+
+# browser automation artifacts
+/.playwright-mcp/
