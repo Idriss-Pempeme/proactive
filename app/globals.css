@@ -85,7 +85,7 @@
   --selection-fg: var(--on-brand);
 
   --nav-height: 90px;
-  --max-width: 1400px;
+  --max-width: 1600px;
   --gutter: max(20px, 5%);
 
   --transition-smooth: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1157,7 +1157,6 @@ body[data-nav-on-media] .navbar:not(.scrolled) {
 .home-hero-body {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   width: 100%;
   padding-top: calc(var(--nav-height) + 48px);
 }
@@ -1168,6 +1167,10 @@ body[data-nav-on-media] .navbar:not(.scrolled) {
   /* The film tile stretches to the copy's exact height: its top meets the
      headline's cap line and its foot sits level with the buttons. */
   align-items: stretch;
+  /* Fills the height between the nav and the stats band, with the copy centred in it,
+     so tall screens don't leave an empty upper half. */
+  flex: 1;
+  align-content: center;
   gap: clamp(40px, 3vw, 56px);
   padding-bottom: clamp(36px, 6vh, 64px);
 }
@@ -1175,7 +1178,7 @@ body[data-nav-on-media] .navbar:not(.scrolled) {
 /* Headline: each line rises out of its own mask. */
 .home-hero-title {
   margin-bottom: 28px;
-  font-size: clamp(2.5rem, 4vw, 4.75rem);
+  font-size: clamp(2.5rem, 4vw, 5rem);
   line-height: 0.98;
   letter-spacing: -0.02em;
   color: var(--hm-ink);
@@ -1196,31 +1199,6 @@ body[data-nav-on-media] .navbar:not(.scrolled) {
 }
 .hero-accent {
   color: var(--brand-orange);
-}
-
-/* Commodity rotator: words slide up through a mask; the cell is sized by the
-   widest word so the line never reflows. */
-.hero-rotator {
-  display: inline-grid;
-  overflow: hidden;
-  vertical-align: bottom;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.12em;
-}
-.hero-rotator > span {
-  grid-area: 1 / 1;
-  white-space: nowrap;
-  transform: translateY(105%);
-  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
-}
-.hero-rotator > .is-current {
-  transform: translateY(0);
-}
-.hero-rotator > .is-leaving {
-  transform: translateY(-105%);
-}
-.hero-rotator > span:not(.is-current):not(.is-leaving) {
-  transition: none;
 }
 
 .hero-rise {
@@ -1297,7 +1275,7 @@ body[data-nav-on-media] .navbar:not(.scrolled) {
 .hero-film {
   display: flex;
   flex-direction: column;
-  width: clamp(340px, 26vw, 480px);
+  width: clamp(340px, 26vw, 560px);
   padding: 12px;
   border: 1px solid rgba(246, 243, 238, 0.14);
   border-radius: 20px;
@@ -1601,9 +1579,27 @@ body[data-nav-on-media] .navbar:not(.scrolled) {
   .hero-watch {
     justify-content: center;
   }
-  /* The watch button above already opens the film; the tile would repeat it. */
-  .hero-film {
+  /* Phones: the film tile becomes a full-width preview card and replaces the
+     text "watch" button, which would only repeat it. */
+  .hero-watch {
     display: none;
+  }
+  .hero-film {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: none;
+  }
+  .hero-film-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  .hero-film-play {
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+  }
+  .hero-film-text {
+    padding: 14px 6px 4px;
   }
   .film-dialog-close {
     top: -52px;
