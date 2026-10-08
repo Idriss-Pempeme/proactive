@@ -7,39 +7,56 @@ import styles from './livres.module.css';
 
 export const metadata: Metadata = {
   title: 'Livres | Proactive Services - Négoce · Formation · Opportunités',
-  description: 'Les ouvrages de Josette Kameni : reconstruction personnelle et entrepreneuriat.',
+  description:
+    'Les ouvrages de Josette Kameni : réussir sa vie de couple et se relever des épreuves, réussir en entrepreneuriat.',
 };
-
-const CONTACT_EMAIL = 'direction@proactiveservices.com';
 
 const BOOKS = [
   {
     id: 'victoire',
     tone: 'ember',
-    genre: 'Récit & développement personnel',
+    genre: 'Témoignage & vie de couple',
     title: "La victoire d'une femme brisée",
     subtitle: 'De victime à Boss Lady',
-    desc: "Un récit sans filtre sur la reconstruction. Josette Kameni y raconte le chemin qui l'a menée de la survie à la direction de ses propres activités, sans rien arranger.",
-    pages: 168,
-    price: '15 €',
+    tagline: 'Le guide pour réussir sa relation, son mariage et sa vie de couple',
+    desc: [
+      'Un ouvrage de témoignage, de réflexion et de conseils consacré aux relations amoureuses, au mariage et aux épreuves de la vie de couple.',
+      "Contrairement à ce que son titre pourrait laisser penser, il ne s'adresse pas uniquement aux femmes : hommes, femmes et couples y trouveront de quoi mieux comprendre les relations et faire de meilleurs choix avant de s'engager.",
+    ],
+    points: [
+      'Bien choisir son partenaire avant de dire « oui »',
+      'Reconnaître les signes d’une relation qui devient toxique',
+      'Comprendre le rôle et les responsabilités de chacun dans le couple',
+      'Traverser une crise, une séparation ou un divorce, et se reconstruire',
+    ],
+    pages: 156,
+    format: 'PDF',
+    price: '8,80 $US',
+    url: 'https://lgfgterv.mychariow.shop/prd_crt48dup',
   },
   {
     id: 'entrepreneuriat',
     tone: 'forest',
     genre: 'Business & entrepreneuriat',
     title: 'Réussir en entrepreneuriat',
-    subtitle: "Les fondations d'une activité rentable et durable",
-    desc: "Un manuel de terrain pour poser les bases d'une entreprise qui tienne dans le temps : choisir son offre, fixer ses prix, aller chercher ses premiers clients et surveiller sa trésorerie.",
-    pages: 192,
-    price: '19 €',
+    subtitle: 'Étapes clés et conseils pratiques',
+    tagline: 'Transformez vos ambitions en succès entrepreneurial',
+    desc: [
+      "Créer une entreprise, développer une activité rentable, surmonter les obstacles et atteindre l'indépendance financière : Josette Kameni partage les leçons tirées de plus de trois décennies dans le monde des affaires.",
+      'Un véritable guide de terrain pour éviter les erreurs les plus fréquentes, renforcer votre vision et accélérer votre réussite.',
+    ],
+    points: [
+      "Les fondements d'un entrepreneuriat réussi",
+      'Les étapes essentielles pour démarrer et développer son activité',
+      'Les clés de la résilience face aux difficultés',
+      "Les stratégies pour créer de la valeur et saisir les opportunités",
+    ],
+    pages: 114,
+    format: 'PDF',
+    price: '8,80 $US',
+    url: 'https://lgfgterv.mychariow.shop/prd_s50b6h6v',
   },
 ] as const;
-
-function orderHref(title: string) {
-  const subject = `Commande : ${title}`;
-  const body = `Bonjour,\n\nJe souhaite commander le livre « ${title} » (PDF + EPUB).\n\nMerci.`;
-  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
 
 export default function LivresPage() {
   return (
@@ -52,8 +69,8 @@ export default function LivresPage() {
             Les ouvrages de <span>Josette Kameni.</span>
           </h1>
           <p className={`${styles.introLead} fade-up`}>
-            Deux livres, deux façons de transmettre : le récit d&apos;une reconstruction, et la méthode pour bâtir une
-            activité qui dure.
+            Deux livres, deux façons de transmettre : réussir sa vie de couple et se relever des épreuves, et la
+            méthode pour bâtir une activité qui dure.
           </p>
         </div>
       </section>
@@ -69,7 +86,15 @@ export default function LivresPage() {
               <p className={styles.genre}>{book.genre}</p>
               <h2 className={styles.bookTitle}>{book.title}</h2>
               <p className={styles.bookSubtitle}>{book.subtitle}</p>
-              <p className={styles.bookDesc}>{book.desc}</p>
+              <p className={styles.tagline}>{book.tagline}</p>
+              {book.desc.map((para) => (
+                <p key={para} className={styles.bookDesc}>{para}</p>
+              ))}
+              <ul className={styles.points}>
+                {book.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
 
               <dl className={styles.specs}>
                 <div>
@@ -78,7 +103,7 @@ export default function LivresPage() {
                 </div>
                 <div>
                   <dt>Format</dt>
-                  <dd>PDF + EPUB</dd>
+                  <dd>{book.format}</dd>
                 </div>
                 <div>
                   <dt>Langue</dt>
@@ -88,14 +113,14 @@ export default function LivresPage() {
 
               <div className={styles.buy}>
                 <span className={styles.price}>{book.price}</span>
-                <a href={orderHref(book.title)} className={styles.buyBtn}>
-                  Commander
+                <a href={book.url} target="_blank" rel="noopener noreferrer" className={styles.buyBtn}>
+                  Télécharger le livre
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M5 12H19M19 12L13 6M19 12L13 18" />
                   </svg>
                 </a>
               </div>
-              <p className={styles.buyNote}>La commande se fait par e-mail.</p>
+              <p className={styles.buyNote}>Offre à durée limitée. Paiement sécurisé et téléchargement immédiat sur la boutique de Josette Kameni.</p>
             </div>
           </div>
         </section>

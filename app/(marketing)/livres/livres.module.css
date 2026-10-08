@@ -189,12 +189,43 @@
   font-size: clamp(1.125rem, 1.5vw, 1.375rem);
   color: var(--text-muted);
 }
+.tagline {
+  max-width: 54ch;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: var(--heading);
+}
 .bookDesc {
   max-width: 54ch;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
   font-size: 1.0625rem;
   line-height: 1.75;
   color: var(--text-muted);
+}
+
+.points {
+  display: grid;
+  gap: 10px;
+  max-width: 54ch;
+  margin: 8px 0 32px;
+  list-style: none;
+}
+.points li {
+  position: relative;
+  padding-left: 26px;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+.points li::before {
+  content: '';
+  position: absolute;
+  top: 0.45em;
+  left: 0;
+  width: 12px;
+  height: 7px;
+  border-left: 2px solid var(--brand-green);
+  border-bottom: 2px solid var(--brand-green);
+  transform: rotate(-45deg);
 }
 
 .specs {
