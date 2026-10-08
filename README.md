@@ -13,6 +13,8 @@ This repository is **UI only**. There is no database, authentication or server l
 
 Built with Next.js 16, React 19 and TypeScript.
 
+**Applying this design to another site?** Start with [HANDOFF.md](HANDOFF.md).
+
 ## Getting started
 
 Requires Node.js 20.9 or newer.
